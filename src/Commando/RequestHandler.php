@@ -1,7 +1,7 @@
 <?php
 namespace Commando;
 
-interface Action
+interface RequestHandler
 {
     /**
      * @param Request $request

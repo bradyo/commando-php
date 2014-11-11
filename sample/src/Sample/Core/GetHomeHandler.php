@@ -1,9 +1,9 @@
 <?php
-namespace Sample;
+namespace Sample\Core;
 
-use Commando\Action;
+use Commando\RequestHandler;
 
-class GetHomeAction implements Action
+class GetHomeHandler implements RequestHandler
 {
     public function handle($request)
     {

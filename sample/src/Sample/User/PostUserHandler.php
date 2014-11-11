@@ -1,9 +1,9 @@
 <?php
 namespace Sample\User;
 
-use Commando\Action;
+use Commando\RequestHandler;
 
-class PostUserAction implements Action
+class PostUserHandler implements RequestHandler
 {
     private $userPostValidator;
     private $userService;
@@ -17,9 +17,9 @@ class PostUserAction implements Action
     public function handle(Request $request)
     {
         $userPost = new UserPost($request);
-        $errorMessages = $this->userPostValidator->validate($userPost);
-        if (count($errorMessages) > 0) {
-            return new InvalidResponse($errorMessages);
+        $errors = $this->userPostValidator->validate($userPost);
+        if (count($errors) > 0) {
+            return new InvalidResponse($errors);
         }
 
         $savedUser = $this->userService->registerUser($userPost);

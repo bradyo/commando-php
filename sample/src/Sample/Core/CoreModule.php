@@ -1,9 +1,11 @@
 <?php
 namespace Sample\Core;
 
+use Commando\Module;
 use PDO;
+use Sample\User\CoreRouteProvider;
 
-class CoreModule
+class CoreModule implements Module
 {
     private $database;
 
@@ -14,11 +16,26 @@ class CoreModule
         ));
     }
 
+    public function bootstrap()
+    {
+
+    }
+
+    public function getRoutes()
+    {
+        return $this->getRouteProvider()->getRoutes();
+    }
+
+
     /**
      * @return PDO
      */
     public function database()
     {
         return $this->database;
+    }
+
+    public function getRouteProvider() {
+        return new CoreRouteProvider();
     }
 }

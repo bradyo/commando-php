@@ -1,9 +1,9 @@
 <?php
 namespace Sample\User;
 
-use Commando\Action;
+use Commando\RequestHandler;
 
-class DeleteUserAction implements Action
+class DeleteUserHandler implements RequestHandler
 {
     private $userRepository;
 

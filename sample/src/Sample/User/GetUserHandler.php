@@ -1,10 +1,9 @@
 <?php
 namespace Sample\User;
 
-use Commando\Action;
-use Commando\JsonResponse;
+use Commando\RequestHandler;
 
-class GetUserAction implements Action
+class GetUserHandler implements RequestHandler
 {
     private $userRepository;
 

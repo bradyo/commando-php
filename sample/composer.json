@@ -1,0 +1,23 @@
+{
+    "minimum-stability": "dev",
+    "name": "bradyo/commando-php-sample",
+    "description": "Sample application using commando-php framework",
+    "keywords": ["framework"],
+    "homepage": "https://github.com/bradyo/commando-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brady Olsen",
+            "email": "bradyaolsen@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "bradyo/commando-php": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Sample": "src/"
+        }
+    }
+}

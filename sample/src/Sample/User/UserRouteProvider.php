@@ -10,25 +10,25 @@ class UserRouteProvider
                 'name' => 'list-users',
                 'value' => '/users',
                 'method' => 'get',
-                'action' => ListUsersAction::class
+                'handler' => ListUsersHandler::class
             ],
             [
                 'name' => 'post-user',
                 'value' => '/users',
                 'method' => 'post',
-                'action' => PostUserAction::class
+                'handler' => PostUserHandler::class
             ],
             [
                 'name' => 'get-user',
                 'value' => '/users/{id}',
                 'method' => 'get',
-                'action' => GetUserAction::class
+                'handler' => GetUserHandler::class
             ],
             [
                 'name' => 'delete-user',
                 'value' => '/users/{id}',
                 'method' => 'delete',
-                'action' => DeleteUserAction::class
+                'handler' => DeleteUserHandler::class
             ],
         ];
     }

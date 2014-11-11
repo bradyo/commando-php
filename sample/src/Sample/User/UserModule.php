@@ -1,7 +1,7 @@
 <?php
 namespace Sample\User;
 
-use Sample\CoreModule;
+use Sample\Core\CoreModule;
 
 class UserModule
 {

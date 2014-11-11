@@ -1,25 +1,27 @@
 {
-  "minimum-stability": "dev",
-  "name": "bradyo/commando-php",
-  "description": "Experimental PHP framework based on the Symfony2 Components",
-  "keywords": ["framework"],
-  "homepage": "https://github.com/bradyo/commando-php",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Brady Olsen",
-      "email": "bradyaolsen@gmail.com"
+    "minimum-stability": "dev",
+    "name": "bradyo/commando-php",
+    "description": "Experimental PHP framework based on the Symfony2 Components",
+    "keywords": ["framework"],
+    "homepage": "https://github.com/bradyo/commando-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brady Olsen",
+            "email": "bradyaolsen@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "pimple/pimple": "~3.0",
+        "symfony/event-dispatcher": ">=2.4,<2.6-dev",
+        "symfony/http-foundation": ">=2.4,<2.6-dev",
+        "symfony/http-kernel": ">=2.4,<2.6-dev",
+        "symfony/routing": ">=2.4,<2.6-dev"
+    },
+    "autoload": {
+        "psr-0": {
+            "Commando": "src/"
+        }
     }
-  ],
-  "require": {
-    "php": ">=5.4",
-    "pimple/pimple": "~3.0",
-    "symfony/event-dispatcher": ">=2.4,<2.6-dev",
-    "symfony/http-foundation": ">=2.4,<2.6-dev",
-    "symfony/http-kernel": ">=2.4,<2.6-dev",
-    "symfony/routing": ">=2.4,<2.6-dev"
-  },
-  "autoload": {
-    "psr-0": {"Commando": "src/"}
-  }
 }

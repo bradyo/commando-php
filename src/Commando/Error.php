@@ -1,7 +1,7 @@
 <?php
 namespace Commando;
 
-class ErrorMessage
+class Error
 {
     private $name;
     private $message;

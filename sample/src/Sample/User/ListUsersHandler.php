@@ -1,9 +1,9 @@
 <?php
 namespace Sample\User;
 
-use Commando\Action;
+use Commando\RequestHandler;
 
-class ListUsersAction implements Action
+class ListUsersHandler implements RequestHandler
 {
     private $userRepository;
 
