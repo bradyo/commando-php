@@ -12,9 +12,10 @@ class Application extends BaseApplication
     private $noteModule;
 
     public function __construct(array $config) {
-        $this->coreModule = new CoreModule($config);
-        $this->userModule = new UserModule($this->coreModule);
-        $this->noteModule = new NoteModule($this->coreModule);
+        parent::__construct($config);
+//        $this->coreModule = new CoreModule($config);
+//        $this->userModule = new UserModule($this->coreModule);
+//        $this->noteModule = new NoteModule($this->coreModule);
     }
 
     public function getCoreModule()
