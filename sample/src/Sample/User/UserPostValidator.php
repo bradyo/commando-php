@@ -2,7 +2,6 @@
 namespace Sample\User;
 
 use Commando\Error;
-use Commando\Validator\MinLengthValidator;
 
 class UserPostValidator
 {
@@ -29,8 +28,7 @@ class UserPostValidator
         }
 
         $minPasswordLength = 6;
-        $lengthValidator = new MinLengthValidator($minPasswordLength);
-        if (! $lengthValidator->isValid($userPost->getPassword())) {
+        if (strlen($userPost->getPassword()) < $minPasswordLength) {
             $errorMessages[] = new Error(
                 'password',
                 'Password must be at least ' . $minPasswordLength . ' characters'
