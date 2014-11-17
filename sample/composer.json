@@ -11,6 +11,12 @@
             "email": "bradyaolsen@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/bradyo/commando-php"
+        }
+    ],
     "require": {
         "php": ">=5.5",
         "bradyo/commando-php": "*"
