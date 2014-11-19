@@ -1,13 +1,12 @@
 <?php
-namespace Commando;
+namespace Commando\Shell;
 
 use Exception;
 
-interface WebExceptionHandler
+interface ExceptionHandler
 {
     /**
      * @param Exception $exception
-     * @return Response
      */
     public function handle(Exception $exception);
 }

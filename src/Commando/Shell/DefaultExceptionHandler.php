@@ -1,5 +1,5 @@
 <?php
-namespace Commando;
+namespace Commando\Shell;
 
 use Commando\Utility\ExceptionUtility;
 use Exception;
@@ -11,7 +11,7 @@ class DefaultExceptionHandler implements ExceptionHandler
      */
     public function handle(Exception $exception)
     {
-        echo "Exception occurred: " . $exception->getMessage() . "\n";
+        echo "Application exception: " . $exception->getMessage() . "\n";
         echo ExceptionUtility::getFullTraceAsString($exception);
     }
 }

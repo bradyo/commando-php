@@ -1,5 +1,5 @@
 <?php
-namespace Commando;
+namespace Commando\Web;
 
 interface RequestHandler
 {

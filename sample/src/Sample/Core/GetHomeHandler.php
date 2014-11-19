@@ -1,17 +1,25 @@
 <?php
 namespace Sample\Core;
 
-use Commando\RequestHandler;
+use Commando\Web\Json\JsonResponse;
+use Commando\Web\Request;
+use Commando\Web\RequestHandler;
 
 class GetHomeHandler implements RequestHandler
 {
-    public function handle($request)
+    private $config;
+
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
+
+    public function handle(Request $request)
     {
         $data = array(
-            'name' => 'Commando Application',
-            'version' => '1.0',
+            'name' => 'Sample Commando Application',
+            'version' => $this->config['version'],
         );
-
-        return new OkResponse($data);
+        return new JsonResponse($data);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Commando;
+namespace Commando\Shell;
 
 class ShowConfigHandler implements ShellHandler
 {
