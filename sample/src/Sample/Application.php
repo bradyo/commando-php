@@ -11,7 +11,6 @@ class Application extends BaseApplication
     {
         parent::__construct($configPath);
         $this->setModule('core', new CoreModule($this->getConfig()));
-        $this->setModule('user', new UserModule($this->getCoreModule()));
     }
 
     /**

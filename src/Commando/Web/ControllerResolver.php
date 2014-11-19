@@ -20,6 +20,9 @@ class ControllerResolver implements ControllerResolverInterface
         if ($handler === null) {
             return false;
         }
+        if (is_callable($handler)) {
+            $handler = call_user_func($handler);
+        }
         return array($handler, 'handle');
     }
 

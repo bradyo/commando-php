@@ -83,12 +83,18 @@ class Application
         return $this->modules[$name];
     }
 
+    public function addRoute($name, Route $route)
+    {
+        $this->routes->add($name, $route);
+
+    }
+
     private function bootstrap()
     {
         $this->shellHandlers['default'] = new DefaultShellHandler();
         $this->shellHandlers['get-config'] = new ShowConfigHandler($this->config);
 
-        $this->routes->add('default', new Route(RequestMethod::ANY, '/', new DefaultRequestHandler()));
+        $this->addRoute('default', new Route(RequestMethod::ANY, '/', new DefaultRequestHandler()));
 
         foreach ($this->modules as $module) {
             foreach ($module->getRoutes() as $name => $route) {

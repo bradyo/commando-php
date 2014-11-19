@@ -8,7 +8,7 @@ class Route extends SymfonyRoute
     /**
      * @param string $method
      * @param string $path
-     * @param RequestHandler $handler
+     * @param RequestHandler|callable $handler
      * @param array $requirements
      */
     public function __construct($method, $path, $handler, $requirements = [])

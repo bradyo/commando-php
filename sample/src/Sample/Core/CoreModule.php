@@ -30,7 +30,7 @@ class CoreModule extends Module
     public function getRoutes()
     {
         return [
-            'home' => new Route(RequestMethod::ANY, '/home', $this->services['get-home-handler']),
+            'home' => new Route(RequestMethod::ANY, '/home', $this->services->raw('home-handler')),
         ];
     }
 
