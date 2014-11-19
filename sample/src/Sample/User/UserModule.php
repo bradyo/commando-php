@@ -1,9 +1,10 @@
 <?php
 namespace Sample\User;
 
+use Commando\Module;
 use Sample\Core\CoreModule;
 
-class UserModule
+class UserModule extends Module
 {
     private $coreModule;
 
@@ -12,35 +13,48 @@ class UserModule
         $this->coreModule = $coreModule;
     }
 
-    /**
-     * @return UserRepository
-     */
-    public function userRepository()
+    public function getRoutes()
     {
-        return new UserRepository($this->coreModule->database());
+        return $this->getRouteProvider()->getRoutes();
     }
 
-    /**
-     * @return UserService
-     */
+    public function userRepository()
+    {
+        return new UserRepository($this->coreModule->getDatabase());
+    }
+
     public function userService()
     {
         return new UserService($this->userRepository());
     }
 
-    /**
-     * @return UserPostValidator
-     */
     public function userPostValidator()
     {
         return new UserPostValidator($this->userRepository());
     }
 
-    /**
-     * @return UserRouteProvider
-     */
-    public function routeProvider()
+    public function listUsersHandler()
     {
-        return new UserRouteProvider();
+        return new ListUsersHandler($this->userRepository());
+    }
+
+    public function postUserHandler()
+    {
+        return new PostUserHandler($this->userPostValidator(), $this->userService());
+    }
+
+    public function getUserHandler()
+    {
+        return new GetUserHandler($this->userRepository());
+    }
+
+    public function deleteUserHandler()
+    {
+        return new DeleteUserHandler($this->userRepository());
+    }
+
+    public function getRouteProvider()
+    {
+        return new UserRouteProvider($this);
     }
 }

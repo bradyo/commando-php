@@ -14,15 +14,15 @@ class CoreModule extends Module
     public function __construct(array $config)
     {
         $this->services = new Container();
-        $this->services['pdo'] = function () use ($config) {
+        $this->services['database'] = function () use ($config) {
             $dsn = $config['database']['dsn'];
             $user = $config['database']['user'];
             $pass = $config['database']['pass'];
             return new PDO($dsn, $user, $pass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]);
         };
-        $this->services['get-home-handler'] = function () use ($config) {
+        $this->services['home-handler'] = function () use ($config) {
             return new GetHomeHandler($config);
         };
     }
@@ -30,7 +30,14 @@ class CoreModule extends Module
     public function getRoutes()
     {
         return [
-            'get-home' => new Route(RequestMethod::GET, '/home', $this->services['get-home-handler']),
+            'home' => new Route(RequestMethod::ANY, '/home', $this->services['get-home-handler']),
         ];
+    }
+
+    /**
+     * @return PDO
+     */
+    public function getDatabase() {
+        return $this->services['database'];
     }
 }

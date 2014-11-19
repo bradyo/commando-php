@@ -4,13 +4,6 @@ namespace Commando;
 abstract class Module
 {
     /**
-     * @return array assoc array of RequestHandler callbacks indexed by name
-     */
-    public function getRequestHandlers() {
-        return [];
-    }
-
-    /**
      * @return array assoc array of Route objects indexed by name
      */
     public function getRoutes() {

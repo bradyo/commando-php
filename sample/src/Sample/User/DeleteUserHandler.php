@@ -1,7 +1,7 @@
 <?php
 namespace Sample\User;
 
-use Commando\RequestHandler;
+use Commando\Web\RequestHandler;
 
 class DeleteUserHandler implements RequestHandler
 {

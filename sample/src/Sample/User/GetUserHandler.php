@@ -1,7 +1,8 @@
 <?php
 namespace Sample\User;
 
-use Commando\RequestHandler;
+use Commando\Web\Request;
+use Commando\Web\RequestHandler;
 
 class GetUserHandler implements RequestHandler
 {
@@ -20,6 +21,6 @@ class GetUserHandler implements RequestHandler
             return new NotFoundResponse('User not found with Id = ' . $id);
         }
 
-        return new OkResponse(new UserView($user));
+        return new UserResponse($user);
     }
 }

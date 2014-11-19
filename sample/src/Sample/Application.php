@@ -3,6 +3,7 @@ namespace Sample;
 
 use Commando\Application as BaseApplication;
 use Sample\Core\CoreModule;
+use Sample\User\UserModule;
 
 class Application extends BaseApplication
 {
@@ -10,6 +11,7 @@ class Application extends BaseApplication
     {
         parent::__construct($configPath);
         $this->setModule('core', new CoreModule($this->getConfig()));
+        $this->setModule('user', new UserModule($this->getCoreModule()));
     }
 
     /**

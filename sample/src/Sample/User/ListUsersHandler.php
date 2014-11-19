@@ -1,7 +1,8 @@
 <?php
 namespace Sample\User;
 
-use Commando\RequestHandler;
+use Commando\Web\Request;
+use Commando\Web\RequestHandler;
 
 class ListUsersHandler implements RequestHandler
 {

@@ -1,35 +1,25 @@
 <?php
 namespace Sample\User;
 
+use Commando\Web\Route;
+
 class UserRouteProvider
 {
+    private $userModule;
+
+    public function __construct(UserModule $userModule)
+    {
+        $this->userModule = $userModule;
+    }
+
     public function getRoutes()
     {
+        $module = $this->userModule;
         return [
-            [
-                'name' => 'list-users',
-                'value' => '/users',
-                'method' => 'get',
-                'handler' => ListUsersHandler::class
-            ],
-            [
-                'name' => 'post-user',
-                'value' => '/users',
-                'method' => 'post',
-                'handler' => PostUserHandler::class
-            ],
-            [
-                'name' => 'get-user',
-                'value' => '/users/{id}',
-                'method' => 'get',
-                'handler' => GetUserHandler::class
-            ],
-            [
-                'name' => 'delete-user',
-                'value' => '/users/{id}',
-                'method' => 'delete',
-                'handler' => DeleteUserHandler::class
-            ],
+            'list-users'  => new Route('get',    '/users',      $module->listUsersHandler()),
+            'post-user'   => new Route('post',   '/users',      $module->postUserHandler()),
+            'get-user'    => new Route('get',    '/users/{id}', $module->getUserHandler()),
+            'delete-user' => new Route('delete', '/users/{id}', $module->deleteUserHandler()),
         ];
     }
 }

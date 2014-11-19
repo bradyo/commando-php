@@ -16,10 +16,10 @@ class GetHomeHandler implements RequestHandler
 
     public function handle(Request $request)
     {
-        $data = array(
+        return new JsonResponse([
             'name' => 'Sample Commando Application',
+            'environment' => $this->config['environment'],
             'version' => $this->config['version'],
-        );
-        return new JsonResponse($data);
+        ]);
     }
 }
