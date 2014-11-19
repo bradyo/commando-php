@@ -62,7 +62,8 @@ class Application extends CommandoApplication
     public function __construct($configPath)
     {
         parent::__construct($configPath);
-        $this->addRoute('home', new Route(RequestMethod::GET, '/', new GetHomeHandler()));
+        $route = new Route(RequestMethod::GET, '/', new GetHomeHandler());
+        $this->addRoute('home', $route);
     }
 }
 
