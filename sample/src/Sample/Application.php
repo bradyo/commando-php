@@ -19,7 +19,7 @@ class Application extends CommandoApplication
 
         $this->addRoute(
             'user-module',
-            new Route(RequestMethod::ANY, '/users{subRoute}', $this->getUserModule(), ['subRoute' => '.*'])
+            new Route(RequestMethod::ANY, '/users{match}', $this->getUserModule(), ['match' => '.*'])
         );
     }
 

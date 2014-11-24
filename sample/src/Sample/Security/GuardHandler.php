@@ -5,6 +5,7 @@ use Commando\Web\Json\JsonResponse;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Commando\Web\Response;
+use Sample\Core\NotAuthenticatedResponse;
 
 class GuardHandler implements RequestHandler
 {
@@ -27,7 +28,7 @@ class GuardHandler implements RequestHandler
             $authenticatedRequest = $this->guard->authenticate($request);
             return $this->securedHandler->handle($authenticatedRequest);
         } else {
-            return new JsonResponse('Authentication required', 401);
+            return new NotAuthenticatedResponse('Authentication required');
         }
     }
 }
