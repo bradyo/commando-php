@@ -21,9 +21,9 @@ Principles:
 - conventional Controller classes replaced by Handler classes, which do only one thing
 - provide simple interfaces to implement
 - favor composition over inheritance
-- favors modular code with composition, not conventions
-- provide basic building blocks for developers to build off
-- agnostic with respect to Domain Model, View, DI, Logging, and configuration
+- favors modular code using composition, not conventions
+- provide basic building blocks for developers to extend
+- agnostic with respect to Domain Model, View, DI, Validation, Logging, and configuration
 
 
 Getting Started
