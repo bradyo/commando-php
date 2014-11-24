@@ -48,9 +48,6 @@ class UserModule implements Module, RequestHandler
                 $this->container['user-service']
             );
         };
-        $this->container['guard'] = function () {
-            return new Guard();
-        };
 
         $this->routes->add(
             'get-user',
@@ -81,7 +78,7 @@ class UserModule implements Module, RequestHandler
         $request->attributes->add($parameters);
 
         $handler = call_user_func($parameters['handler']);
-        $guardHandler = new GuardHandler($this->container['guard'], $handler);
+        $guardHandler = new GuardHandler($this->guard, $handler);
 
         return $guardHandler->handle($request);
     }
