@@ -1,7 +1,7 @@
 <?php
 namespace Sample\User;
 
-use Commando\Web\Json\JsonResponse;
+use Sample\Core\NotAllowedResponse;
 use Sample\Core\ValidationErrorResponse;
 use Sample\Security\AuthenticatedRequest;
 use Sample\Security\AuthenticatedRequestHandler;
@@ -21,7 +21,7 @@ class PostUserHandler implements AuthenticatedRequestHandler
     public function handle(AuthenticatedRequest $request)
     {
         if (! $request->getAccessToken()->hasRole(Roles::ADMIN)) {
-            return new JsonResponse('Not allowed', 403);
+            return new NotAllowedResponse('Not allowed to post Users');
         }
 
         $userPost = new UserPost($request->request);
@@ -32,6 +32,6 @@ class PostUserHandler implements AuthenticatedRequestHandler
 
         $newUser = $this->userService->registerUser($userPost);
 
-        return new UserResponse($newUser);
+        return new UserResponse($newUser, 201);
     }
 }

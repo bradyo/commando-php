@@ -144,6 +144,8 @@ class Application
         $request = new Request($_GET, $_POST,  array(), $_COOKIE, $_FILES, $_SERVER);
         $this->convertRequestBody($request);
 
+        $context = new RequestContext();
+        $context->fromRequest($request);
         $matcher = new UrlMatcher($this->routes, new RequestContext());
         $routeListener = new RouterListener($matcher);
 
@@ -168,7 +170,7 @@ class Application
     private function convertRequestBody(Request $request)
     {
         $method = strtoupper($request->server->get('REQUEST_METHOD', 'GET'));
-        if (in_array($method, ['PUT', 'DELETE', 'PATCH'])) {
+        if (in_array($method, ['POST', 'PUT', 'PATCH'])) {
             // parse request content into params
             $data = [];
             if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')) {

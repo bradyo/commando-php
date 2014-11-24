@@ -1,7 +1,7 @@
 <?php
 namespace Sample\User;
 
-use Commando\Web\Json\JsonResponse;
+use Sample\Core\NotAllowedResponse;
 use Sample\Security\AuthenticatedRequest;
 use Sample\Security\AuthenticatedRequestHandler;
 use Sample\Security\Roles;
@@ -19,7 +19,7 @@ class ListUsersHandler implements AuthenticatedRequestHandler
     {
         $isAdmin = $request->getAccessToken()->hasRole(Roles::ADMIN);
         if (! $isAdmin) {
-            return new JsonResponse('Not allowed', 403);
+            return new NotAllowedResponse('Not allowed to list Users');
         }
 
         $users = $this->userRepository->findAll();

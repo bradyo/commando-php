@@ -3,23 +3,39 @@ namespace Sample\User;
 
 class UserRepository
 {
+    /**
+     * @var User[]
+     */
+    private $usersById;
+
+    public function __construct()
+    {
+        $this->usersById = [
+            1 => $this->generateUser(1, 'bradyaolsen@gmail.com'),
+            2 => $this->generateUser(2, 'somebody1@domain.com'),
+            3 => $this->generateUser(3, 'somebody2@domain.com'),
+            4 => $this->generateUser(4, 'somebody3@domain.com'),
+        ];
+    }
+
     public function find($id)
     {
-        return $this->generateUser($id, 'bradyaolsen@gmail.com');
+        return $this->usersById[$id];
     }
 
     public function findByEmail($email)
     {
-        return $this->generateUser(rand(1, 100), $email);
+        foreach ($this->usersById as $id => $user) {
+            if ($user->getEmail() === $email) {
+                return $user;
+            }
+        }
+        return null;
     }
 
     public function findAll()
     {
-        $users = array();
-        for ($i = 1; $i <= 10; $i++) {
-            $users[] = $this->generateUser($i, 'bradyaolsen+' . $i . '@gmail.com');
-        }
-        return $users;
+        return array_values($this->usersById);
     }
 
     private function generateUser($id, $email)

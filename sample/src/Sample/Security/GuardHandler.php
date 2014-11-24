@@ -1,7 +1,6 @@
 <?php
 namespace Sample\Security;
 
-use Commando\Web\Json\JsonResponse;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Commando\Web\Response;
@@ -24,7 +23,8 @@ class GuardHandler implements RequestHandler
      */
     public function handle(Request $request)
     {
-        if ($request->getUserInfo() !== null) {
+        var_dump($request->getUser());
+        if ($request->getUser() !== null) {
             $authenticatedRequest = $this->guard->authenticate($request);
             return $this->securedHandler->handle($authenticatedRequest);
         } else {

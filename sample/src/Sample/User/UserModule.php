@@ -67,7 +67,9 @@ class UserModule implements Module, RequestHandler
 
     public function handle(Request $request)
     {
-        $matcher = new UrlMatcher($this->routes, new RequestContext());
+        $context = new RequestContext();
+        $context->fromRequest($request);
+        $matcher = new UrlMatcher($this->routes, $context);
         $parameters = $matcher->matchRequest($request);
         if (! isset($parameters['handler'])) {
             return new JsonResponse('Not found', 404);
