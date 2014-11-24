@@ -11,7 +11,7 @@ class UserRepository
     public function __construct()
     {
         $this->usersById = [
-            1 => $this->generateUser(1, 'bradyaolsen@gmail.com'),
+            1 => $this->generateUser(1, 'admin@domain.com'),
             2 => $this->generateUser(2, 'somebody1@domain.com'),
             3 => $this->generateUser(3, 'somebody2@domain.com'),
             4 => $this->generateUser(4, 'somebody3@domain.com'),
@@ -20,7 +20,11 @@ class UserRepository
 
     public function find($id)
     {
-        return $this->usersById[$id];
+        if (isset($this->usersById[$id])) {
+            return $this->usersById[$id];
+        } else {
+            return null;
+        }
     }
 
     public function findByEmail($email)

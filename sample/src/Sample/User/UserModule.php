@@ -10,6 +10,7 @@ use Commando\Web\Route;
 use Pimple\Container;
 use Sample\Core\CoreModule;
 use Sample\Security\Guard;
+use Sample\Security\GuardHandler;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
@@ -47,6 +48,9 @@ class UserModule implements Module, RequestHandler
                 $this->container['user-service']
             );
         };
+        $this->container['guard'] = function () {
+            return new Guard();
+        };
 
         $this->routes->add(
             'get-user',
@@ -77,9 +81,8 @@ class UserModule implements Module, RequestHandler
         $request->attributes->add($parameters);
 
         $handler = call_user_func($parameters['handler']);
-        $authenticatedRequest = $this->guard->authenticate($request);
-        $response = $handler->handle($authenticatedRequest);
+        $guardHandler = new GuardHandler($this->container['guard'], $handler);
 
-        return $response;
+        return $guardHandler->handle($request);
     }
 }

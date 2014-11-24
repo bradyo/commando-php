@@ -23,8 +23,7 @@ class GuardHandler implements RequestHandler
      */
     public function handle(Request $request)
     {
-        var_dump($request->getUser());
-        if ($request->getUser() !== null) {
+        if ($request->getUserInfo() !== null) {
             $authenticatedRequest = $this->guard->authenticate($request);
             return $this->securedHandler->handle($authenticatedRequest);
         } else {
