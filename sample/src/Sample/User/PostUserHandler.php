@@ -1,10 +1,13 @@
 <?php
 namespace Sample\User;
 
-use Commando\Web\Request;
-use Commando\Web\RequestHandler;
+use Commando\Web\Json\JsonResponse;
+use Sample\Core\ValidationErrorResponse;
+use Sample\Security\AuthenticatedRequest;
+use Sample\Security\AuthenticatedRequestHandler;
+use Sample\Security\Roles;
 
-class PostUserHandler implements RequestHandler
+class PostUserHandler implements AuthenticatedRequestHandler
 {
     private $userPostValidator;
     private $userService;
@@ -15,16 +18,20 @@ class PostUserHandler implements RequestHandler
         $this->userService = $userService;
     }
 
-    public function handle(Request $request)
+    public function handle(AuthenticatedRequest $request)
     {
-        $userPost = new UserPost($request);
-        $errors = $this->userPostValidator->validate($userPost);
-        if (count($errors) > 0) {
-            return new InvalidResponse($errors);
+        if (! $request->getAccessToken()->hasRole(Roles::ADMIN)) {
+            return new JsonResponse('Not allowed', 403);
         }
 
-        $savedUser = $this->userService->registerUser($userPost);
+        $userPost = new UserPost($request->request);
+        $errors = $this->userPostValidator->validate($userPost);
+        if (count($errors) > 0) {
+            return new ValidationErrorResponse('Invalid request', $errors);
+        }
 
-        return new UserPostOkResponse($savedUser, $request);
+        $newUser = $this->userService->registerUser($userPost);
+
+        return new UserResponse($newUser);
     }
 }

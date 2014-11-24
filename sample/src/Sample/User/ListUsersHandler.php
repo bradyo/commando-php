@@ -1,10 +1,12 @@
 <?php
 namespace Sample\User;
 
-use Commando\Web\Request;
-use Commando\Web\RequestHandler;
+use Commando\Web\Json\JsonResponse;
+use Sample\Security\AuthenticatedRequest;
+use Sample\Security\AuthenticatedRequestHandler;
+use Sample\Security\Roles;
 
-class ListUsersHandler implements RequestHandler
+class ListUsersHandler implements AuthenticatedRequestHandler
 {
     private $userRepository;
 
@@ -13,10 +15,15 @@ class ListUsersHandler implements RequestHandler
         $this->userRepository = $userRepository;
     }
 
-    public function handle(Request $request)
+    public function handle(AuthenticatedRequest $request)
     {
+        $isAdmin = $request->getAccessToken()->hasRole(Roles::ADMIN);
+        if (! $isAdmin) {
+            return new JsonResponse('Not allowed', 403);
+        }
+
         $users = $this->userRepository->findAll();
 
-        return new ListResponse($users);
+        return new UserListResponse($users);
     }
 }

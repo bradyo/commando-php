@@ -1,23 +1,15 @@
 <?php
 namespace Commando;
 
-abstract class Module
+interface Module
 {
-    /**
-     * @return array assoc array of Route objects indexed by name
-     */
-    public function getRoutes() {
-        return [];
-    }
-
     /**
      * Callback for bootstrapping application.
      *
      * Here you can get modules from the application and call any available functions on them
-     * as needed.
+     * as needed to glue your application together.
      *
-     * @param Application $app application to bootstrap
+     * @param Application $application
      */
-    public function bootstrap(Application $app)
-    {}
+    public function bootstrap(Application $application);
 }

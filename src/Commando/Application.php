@@ -86,7 +86,6 @@ class Application
     public function addRoute($name, Route $route)
     {
         $this->routes->add($name, $route);
-
     }
 
     private function bootstrap()
@@ -97,9 +96,6 @@ class Application
         $this->addRoute('default', new Route(RequestMethod::ANY, '/', new DefaultRequestHandler()));
 
         foreach ($this->modules as $module) {
-            foreach ($module->getRoutes() as $name => $route) {
-                $this->routes->add($name, $route);
-            }
             $module->bootstrap($this);
         }
     }
@@ -146,7 +142,31 @@ class Application
     {
         $this->bootstrap();
         $request = new Request($_GET, $_POST,  array(), $_COOKIE, $_FILES, $_SERVER);
+        $this->convertRequestBody($request);
 
+        $matcher = new UrlMatcher($this->routes, new RequestContext());
+        $routeListener = new RouterListener($matcher);
+
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addSubscriber($routeListener);
+
+        $resolver = new ControllerResolver();
+        $kernel = new HttpKernel($dispatcher, $resolver);
+
+        $response = null;
+        try {
+            $response = $kernel->handle($request, HttpKernelInterface::MASTER_REQUEST, false);
+        }
+        catch (Exception $e) {
+            $response = $this->webExceptionHandler->handle($request, $e);
+        }
+        $response->send();
+        $kernel->terminate($request, $response);
+        exit;
+    }
+
+    private function convertRequestBody(Request $request)
+    {
         $method = strtoupper($request->server->get('REQUEST_METHOD', 'GET'));
         if (in_array($method, ['PUT', 'DELETE', 'PATCH'])) {
             // parse request content into params
@@ -159,33 +179,10 @@ class Application
             }
             $request->request = new ParameterBag($data);
         }
-
-        $response = null;
-        $kernel = $this->createHttpKernel();
-        try {
-            $response = $kernel->handle($request, HttpKernelInterface::MASTER_REQUEST, false);
-        }
-        catch (Exception $e) {
-            $response = $this->webExceptionHandler->handle($request, $e);
-        }
-        $response->send();
-        $kernel->terminate($request, $response);
-        exit;
     }
 
     public function getRequestHandler($name)
     {
         return $this->requestHandlers[$name];
-    }
-
-    private function createHttpKernel()
-    {
-        $matcher = new UrlMatcher($this->routes, new RequestContext());
-        $resolver = new ControllerResolver($this);
-
-        $dispatcher = new EventDispatcher();
-        $dispatcher->addSubscriber(new RouterListener($matcher));
-
-        return new HttpKernel($dispatcher, $resolver);
     }
 }

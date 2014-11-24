@@ -12,7 +12,7 @@ class UserService
 
     public function getUser($email, $password)
     {
-        $user = $this->userRepository->findOneByEmail($email);
+        $user = $this->userRepository->findByEmail($email);
         $passwordHash = sha1($password . $user->getPasswordSalt());
         if ($passwordHash == $user->getPasswordHash()) {
             return $user;

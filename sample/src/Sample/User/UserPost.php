@@ -1,13 +1,15 @@
 <?php
 namespace Sample\User;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
+
 class UserPost
 {
     private $email;
     private $password;
     private $passwordRepeat;
 
-    public function __construct($request)
+    public function __construct(ParameterBag $request)
     {
         $this->email = $request->get('email');
         $this->password = $request->get('password');

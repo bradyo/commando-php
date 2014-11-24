@@ -1,60 +1,83 @@
 <?php
 namespace Sample\User;
 
+use Commando\Application;
 use Commando\Module;
+use Commando\Web\Json\JsonResponse;
+use Commando\Web\Request;
+use Commando\Web\RequestHandler;
+use Commando\Web\Route;
+use Pimple\Container;
 use Sample\Core\CoreModule;
+use Sample\Security\Guard;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
 
-class UserModule extends Module
+class UserModule implements Module, RequestHandler
 {
-    private $coreModule;
+    private $routes;
+    private $container;
+    private $guard;
 
-    public function __construct(CoreModule $coreModule)
+    public function __construct(CoreModule $coreModule, Guard $guard)
     {
-        $this->coreModule = $coreModule;
+        $this->guard = $guard;
+        $this->routes = new RouteCollection();
+
+        $this->container = new Container();
+        $this->container['user-repository'] = function () use ($coreModule) {
+            return new UserRepository($coreModule->getDatabase());
+        };
+        $this->container['user-service'] = function () {
+            return new UserService($this->container['user-repository']);
+        };
+        $this->container['user-post-validator'] = function () {
+            return new UserPostValidator($this->container['user-repository']);
+        };
+        $this->container['get-handler'] = function () {
+            return new GetUserHandler($this->container['user-repository']);
+        };
+        $this->container['list-handler'] = function () {
+            return new ListUsersHandler($this->container['user-repository']);
+        };
+        $this->container['post-handler'] = function () {
+            return new PostUserHandler(
+                $this->container['user-post-validator'],
+                $this->container['user-service']
+            );
+        };
+
+        $this->routes->add(
+            'get-user',
+            new Route('GET', '/users/{id}', $this->container->raw('get-handler'))
+        );
+        $this->routes->add(
+            'list-users',
+            new Route('GET', '/users', $this->container->raw('list-handler'))
+        );
+        $this->routes->add(
+            'post-user',
+            new Route('POST', '/users', $this->container->raw('post-handler'))
+        );
     }
 
-    public function getRoutes()
-    {
-        return $this->getRouteProvider()->getRoutes();
-    }
+    public function bootstrap(Application $application)
+    {}
 
-    public function userRepository()
+    public function handle(Request $request)
     {
-        return new UserRepository($this->coreModule->getDatabase());
-    }
+        $matcher = new UrlMatcher($this->routes, new RequestContext());
+        $parameters = $matcher->matchRequest($request);
+        if (! isset($parameters['handler'])) {
+            return new JsonResponse('Not found', 404);
+        }
+        $request->attributes->add($parameters);
 
-    public function userService()
-    {
-        return new UserService($this->userRepository());
-    }
+        $handler = call_user_func($parameters['handler']);
+        $authenticatedRequest = $this->guard->authenticate($request);
+        $response = $handler->handle($authenticatedRequest);
 
-    public function userPostValidator()
-    {
-        return new UserPostValidator($this->userRepository());
-    }
-
-    public function listUsersHandler()
-    {
-        return new ListUsersHandler($this->userRepository());
-    }
-
-    public function postUserHandler()
-    {
-        return new PostUserHandler($this->userPostValidator(), $this->userService());
-    }
-
-    public function getUserHandler()
-    {
-        return new GetUserHandler($this->userRepository());
-    }
-
-    public function deleteUserHandler()
-    {
-        return new DeleteUserHandler($this->userRepository());
-    }
-
-    public function getRouteProvider()
-    {
-        return new UserRouteProvider($this);
+        return $response;
     }
 }

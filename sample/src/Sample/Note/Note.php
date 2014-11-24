@@ -1,7 +1,9 @@
 <?php
 namespace Sample\Note;
 
-class Note
+use Sample\Rest\Resource;
+
+class Note extends Resource
 {
     private $id;
 

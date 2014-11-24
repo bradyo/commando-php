@@ -1,7 +1,7 @@
 <?php
 namespace Sample\User;
 
-use Commando\Error;
+use Sample\Core\ValidationError;
 
 class UserPostValidator
 {
@@ -14,14 +14,14 @@ class UserPostValidator
 
     /**
      * @param UserPost $userPost
-     * @return Error[]
+     * @return ValidationError[]
      */
     public function validate(UserPost $userPost)
     {
-        $errorMessages = [];
-        $existingUser = $this->userRepository->findOneByEmail($userPost->getEmail());
+        $errors = [];
+        $existingUser = $this->userRepository->findByEmail($userPost->getEmail());
         if ($existingUser !== null) {
-            $errorMessages[] = new Error(
+            $errors[] = new ValidationError(
                 'email',
                 'A user with that email already exists'
             );
@@ -29,19 +29,19 @@ class UserPostValidator
 
         $minPasswordLength = 6;
         if (strlen($userPost->getPassword()) < $minPasswordLength) {
-            $errorMessages[] = new Error(
+            $errors[] = new ValidationError(
                 'password',
                 'Password must be at least ' . $minPasswordLength . ' characters'
             );
         } else {
             if ($userPost->getPasswordRepeat() !== $userPost->getPassword()) {
-                $errorMessages[] = new Error(
+                $errors[] = new ValidationError(
                     'passwordRepeat',
                     'Password repeat does not match password'
                 );
             }
         }
 
-        return $errorMessages;
+        return $errors;
     }
 }

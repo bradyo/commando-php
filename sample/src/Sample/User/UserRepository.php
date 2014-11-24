@@ -3,32 +3,26 @@ namespace Sample\User;
 
 class UserRepository
 {
-    private $entityManager;
-
-    public function __construct($entityManager)
+    public function find($id)
     {
-        $this->entityManager = $entityManager;
-    }
-
-    public function find($id) {
-        return $this->fakeUser($id, 'bradyaolsen@gmail.com');
+        return $this->generateUser($id, 'bradyaolsen@gmail.com');
     }
 
     public function findByEmail($email)
     {
-        return $this->fakeUser(rand(1, 100), $email);
+        return $this->generateUser(rand(1, 100), $email);
     }
 
     public function findAll()
     {
         $users = array();
-        for ($i = 1; $i <= 30; $i++) {
-            $users[] = $this->fakeUser($i, 'bradyaolsen+' . $i . '@gmail.com');
+        for ($i = 1; $i <= 10; $i++) {
+            $users[] = $this->generateUser($i, 'bradyaolsen+' . $i . '@gmail.com');
         }
         return $users;
     }
 
-    private function fakeUser($id, $email)
+    private function generateUser($id, $email)
     {
         $password = "password";
         $passwordSalt = sha1("123");
