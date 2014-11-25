@@ -1,9 +1,7 @@
 <?php
 namespace Sample\Note;
 
-use Sample\Rest\ResourceRepository;
-
-class NoteRepository implements ResourceRepository
+class NoteRepository
 {
     private $notesById;
 

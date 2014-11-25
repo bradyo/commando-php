@@ -1,15 +1,17 @@
 <?php
 namespace Sample\Rest;
 
-class ResourceSpec
+class ResourceConfig
 {
     private $path;
+    private $className;
     private $fields;
     private $relations;
 
-    public function __construct($path, $fields, $relations)
+    public function __construct($path, $className, $fields, $relations)
     {
         $this->path = $path;
+        $this->className = $className;
         $this->fields = $fields;
         $this->relations = $relations;
     }
@@ -17,6 +19,11 @@ class ResourceSpec
     public function getPath()
     {
         return $this->path;
+    }
+
+    public function getClassName()
+    {
+        return $this->className;
     }
 
     public function getFields()

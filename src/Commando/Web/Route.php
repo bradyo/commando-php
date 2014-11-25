@@ -14,7 +14,7 @@ class Route extends SymfonyRoute
     public function __construct($method, $path, $handler, $requirements = [])
     {
         $methods = [];
-        if ($method !== null && $method != RequestMethod::ANY) {
+        if ($method !== null && $method != Method::ANY) {
             $methods = [strtoupper($method)];
         }
         $defaults = ['handler' => $handler];

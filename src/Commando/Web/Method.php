@@ -1,7 +1,7 @@
 <?php
 namespace Commando\Web;
 
-class RequestMethod
+class Method
 {
     const ANY = 'any';
     const GET = 'get';

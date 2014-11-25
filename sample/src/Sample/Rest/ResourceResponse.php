@@ -19,9 +19,6 @@ class ResourceResponse extends Response
             $expands = array($expand);
         }
 
-
-
-
         $content = [
             'uri' => $resource->getUri(),
             'data' => $resource->getData(),

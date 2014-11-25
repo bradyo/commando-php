@@ -1,34 +1,33 @@
 <?php
 namespace Sample\User;
 
-use Commando\Application;
-use Commando\Module;
 use Commando\Web\Json\JsonResponse;
+use Commando\Web\Method;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Commando\Web\Route;
 use Pimple\Container;
-use Sample\Core\CoreModule;
-use Sample\Security\Guard;
+use Sample\Application;
 use Sample\Security\GuardedRequestHandler;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 
-class UserModule implements Module, RequestHandler
+class UserModule implements RequestHandler
 {
     private $routes;
     private $container;
-    private $guard;
 
-    public function __construct(CoreModule $coreModule, Guard $guard)
+    public function __construct(Application $app)
     {
-        $this->guard = $guard;
         $this->routes = new RouteCollection();
 
         $this->container = new Container();
-        $this->container['user-repository'] = function () use ($coreModule) {
-            return new UserRepository($coreModule->getDatabase());
+        $this->container['guard'] = function () use ($app) {
+            return $app->getGuard();
+        };
+        $this->container['user-repository'] = function () use ($app) {
+            return new UserRepository($app->getDatabase());
         };
         $this->container['user-service'] = function () {
             return new UserService($this->container['user-repository']);
@@ -51,20 +50,17 @@ class UserModule implements Module, RequestHandler
 
         $this->routes->add(
             'get-user',
-            new Route('GET', '/users/{id}', $this->container->raw('get-handler'))
+            new Route(Method::GET, '/users/{id}', $this->container->raw('get-handler'))
         );
         $this->routes->add(
             'list-users',
-            new Route('GET', '/users', $this->container->raw('list-handler'))
+            new Route(Method::GET, '/users', $this->container->raw('list-handler'))
         );
         $this->routes->add(
             'post-user',
-            new Route('POST', '/users', $this->container->raw('post-handler'))
+            new Route(Method::POST, '/users', $this->container->raw('post-handler'))
         );
     }
-
-    public function bootstrap(Application $application)
-    {}
 
     public function handle(Request $request)
     {
@@ -78,7 +74,7 @@ class UserModule implements Module, RequestHandler
         $request->attributes->add($parameters);
 
         $handler = call_user_func($parameters['handler']);
-        $guardedHandler = new GuardedRequestHandler($this->guard, $handler);
+        $guardedHandler = new GuardedRequestHandler($this->container['guard'], $handler);
 
         return $guardedHandler->handle($request);
     }

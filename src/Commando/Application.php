@@ -8,7 +8,7 @@ use Commando\Web\ControllerResolver;
 use Commando\Web\DefaultRequestHandler;
 use Commando\Web\DefaultWebExceptionHandler;
 use Commando\Web\Request;
-use Commando\Web\RequestMethod;
+use Commando\Web\Method;
 use Commando\Web\Route;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -22,31 +22,26 @@ use Exception;
 use ErrorException;
 use Pimple\Container;
 
-class Application
+abstract class Application
 {
-    private $config;
-    private $exceptionHandler;
-    private $webExceptionHandler;
+    protected $config;
+    protected $exceptionHandler;
+    protected $webExceptionHandler;
 
     /**
      * @var Container of ShellHandler providers
      */
-    private $shellHandlers;
+    protected $shellHandlers;
 
     /**
      * @var Container of RequestHandler providers
      */
-    private $requestHandlers;
+    protected $requestHandlers;
 
     /**
      * @var RouteCollection
      */
-    private $routes;
-
-    /**
-     * @var Module[]
-     */
-    private $modules;
+    protected $routes;
 
     public function __construct($configPath)
     {
@@ -62,7 +57,6 @@ class Application
         $this->shellHandlers = new Container();
         $this->requestHandlers = new Container();
         $this->routes = new RouteCollection();
-        $this->modules = [];
 
         $this->exceptionHandler = new DefaultExceptionHandler();
         $this->webExceptionHandler = new DefaultWebExceptionHandler();
@@ -71,16 +65,6 @@ class Application
     public function getConfig()
     {
         return $this->config;
-    }
-
-    public function setModule($name, Module $module)
-    {
-        $this->modules[$name] = $module;
-    }
-
-    public function getModule($name)
-    {
-        return $this->modules[$name];
     }
 
     public function addRoute($name, Route $route)
@@ -93,11 +77,7 @@ class Application
         $this->shellHandlers['default'] = new DefaultShellHandler();
         $this->shellHandlers['get-config'] = new ShowConfigHandler($this->config);
 
-        $this->addRoute('default', new Route(RequestMethod::ANY, '/', new DefaultRequestHandler()));
-
-        foreach ($this->modules as $module) {
-            $module->bootstrap($this);
-        }
+        $this->addRoute('default', new Route(Method::ANY, '/', new DefaultRequestHandler()));
     }
 
     public function handleError($code, $message, $scriptPath, $lineNumber)

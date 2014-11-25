@@ -41,7 +41,7 @@ use Commando\Web\Json\JsonResponse;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 
-class GetHomeHandler implements RequestHandler
+class RootHandler implements RequestHandler
 {
     public function handle(Request $request)
     {
@@ -60,7 +60,7 @@ class Application extends CommandoApplication
     public function __construct($configPath)
     {
         parent::__construct($configPath);
-        $route = new Route(RequestMethod::GET, '/', new GetHomeHandler());
+        $route = new Route(Method::GET, '/', new RootHandler());
         $this->addRoute('home', $route);
     }
 }

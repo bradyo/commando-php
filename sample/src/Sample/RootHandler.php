@@ -1,11 +1,11 @@
 <?php
-namespace Sample\Core;
+namespace Sample;
 
 use Commando\Web\Json\JsonResponse;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 
-class GetHomeHandler implements RequestHandler
+class RootHandler implements RequestHandler
 {
     private $config;
 
@@ -17,7 +17,7 @@ class GetHomeHandler implements RequestHandler
     public function handle(Request $request)
     {
         return new JsonResponse([
-            'name' => 'Sample Commando Application',
+            'name' => 'Sample Application',
             'environment' => $this->config['environment'],
             'version' => $this->config['version'],
         ]);

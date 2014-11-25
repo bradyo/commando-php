@@ -1,32 +1,26 @@
 <?php
 namespace Sample\Rest;
 
-interface ResourceRepository
+use PDO;
+
+class ResourceRepository
 {
-    /**
-     * @param string $id
-     * @return Resource
-     */
-    public function find($id);
+    private $pdo;
+    private $entityRepositoryMap;
 
-    /**
-     * @return Resource[]
-     */
-    public function findAll();
+    public function __construct(PDO $pdo)
+    {
+        $this->pdo = $pdo;
+        $this->entityRepositoryMap = [];
+    }
 
-    /**
-     * @return int
-     */
-    public function count();
+    public function createQuery($resourceName, $expandRelations)
+    {
+        return new ResourceQuery($this, $resourceName, $expandRelations);
+    }
 
-    /**
-     * @param Resource $resource
-     * @return mixed
-     */
-    public function save(Resource $resource);
-
-    /**
-     * @param string $id
-     */
-    public function remove($id);
+    public function createListQuery($resourceName, array $criteria, $expandRelations)
+    {
+        return new ResourceListQuery($this, $resourceName, $expandRelations);
+    }
 }

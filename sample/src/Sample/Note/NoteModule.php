@@ -1,18 +1,51 @@
 <?php
 namespace Sample\Note;
 
-use Sample\Rest\ResourceSpec;
-use Sample\Rest\RestModule;
+use Commando\Web\Request;
+use Commando\Web\RequestHandler;
+use Commando\Web\Response;
+use Sample\Application;
+use Sample\Rest\ResourceConfig;
+use Sample\Rest\ResourceRepository;
+use Sample\Rest\RestHandler;
+use Sample\Security\Guard;
 
-class NoteModule extends RestModule
+class NoteHandler implements RequestHandler
 {
-    public function __construct()
+    private $resourceConfig;
+    private $restHandler;
+
+    public function __construct(Guard $guard, ResourceRepository $resourceRepository)
     {
-        $spec = new ResourceSpec(
-            'note',
-            ['id', 'authorId', 'content'],
-            ['author']
+        $config = new ResourceConfig(
+            'notes',
+            'Sample\\Note\\Note',
+            [
+                'id',
+                'authorId',
+                'content'
+            ],
+            [
+                'author' => 'Sample\\User\\User'
+            ],
+            new NoteRepository()
         );
-        parent::__construct($spec);
+        $this->resourceConfig = $config;
+
+        $this->restHandler = new RestHandler($guard, $config, $resourceRepository);
+    }
+
+    public function bootstrap(Application $app)
+    {
+        $app->getResourceRepository()->addResourceConfig($this->resourceConfig);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function handle(Request $request)
+    {
+        return $this->restHandler->handle($request);
     }
 }
