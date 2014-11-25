@@ -122,3 +122,40 @@ class PostUserHandler implements AuthenticatedRequestHandler
     }
 }
 ```
+
+Use Handler interface to construct more sophisticated handlers. For example, the security handler below uses an authentication service to transform a Request into an `AuthenticatedRequest` (decorating the request in a type-safe way with a security token), and delegates to an `AuthenticatedRequestHandler` that knows how to deal with the `AuthenticatedRequest`:
+
+```php
+namespace Sample\Security;
+
+use Commando\Web\Request;
+use Commando\Web\RequestHandler;
+use Commando\Web\Response;
+use Sample\Core\NotAuthenticatedResponse;
+
+class GuardedRequestHandler implements RequestHandler
+{
+    private $guard;
+    private $securedHandler;
+
+    public function __construct(Guard $guard, AuthenticatedRequestHandler $securedHandler)
+    {
+        $this->guard = $guard;
+        $this->securedHandler = $securedHandler;
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function handle(Request $request)
+    {
+        if ($request->getUserInfo() !== null) {
+            $authenticatedRequest = $this->guard->authenticate($request);
+            return $this->securedHandler->handle($authenticatedRequest);
+        } else {
+            return new NotAuthenticatedResponse('Authentication required');
+        }
+    }
+}
+```
