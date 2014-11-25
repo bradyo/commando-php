@@ -21,15 +21,13 @@ Principles:
 - conventional Controller classes replaced by Handler classes, which do only one thing
 - provide simple interfaces to implement
 - favor composition over inheritance
-- favors modular code with composition, not conventions
-- provide basic building blocks for developers to build off
-- agnostic with respect to Domain Model, View, DI, Logging, and configuration
+- favors modular code using composition, not conventions
+- provide basic building blocks for developers to extend
+- agnostic with respect to Domain Model, View, DI, Validation, Logging, and configuration
 
 
 Getting Started
 ===============
-
-Browse the sample application under `sample/` folder.
 
 Commando uses Handlers to processes requests from either the web or command line.
 
@@ -81,3 +79,83 @@ $app->handleRequest();
 ```sh
 php -S localhost:8000
 ```
+
+Here's a taste of what you can do with Commando Handlers:
+
+```php
+namespace Sample\User;
+
+use Sample\Core\NotAllowedResponse;
+use Sample\Core\ValidationErrorResponse;
+use Sample\Security\AuthenticatedRequest;
+use Sample\Security\AuthenticatedRequestHandler;
+use Sample\Security\Roles;
+
+class PostUserHandler implements AuthenticatedRequestHandler
+{
+    private $userPostValidator;
+    private $userService;
+
+    public function __construct(UserPostValidator $userFormValidator, UserService $userService)
+    {
+        $this->userPostValidator = $userFormValidator;
+        $this->userService = $userService;
+    }
+
+    public function handle(AuthenticatedRequest $request)
+    {
+        if (! $request->getAccessToken()->hasRole(Roles::ADMIN)) {
+            return new NotAllowedResponse('Not allowed to post Users');
+        }
+
+        $userPost = new UserPost($request->request);
+        $errors = $this->userPostValidator->validate($userPost);
+        if (count($errors) > 0) {
+            return new ValidationErrorResponse('Invalid request', $errors);
+        }
+
+        $newUser = $this->userService->registerUser($userPost);
+
+        return new UserResponse($newUser, 201);
+    }
+}
+```
+
+Use Handler interface to construct more sophisticated handlers. For example, the security handler below uses an authentication service to transform a Request into an `AuthenticatedRequest` (decorating the request in a type-safe way with a security token), and delegates to an `AuthenticatedRequestHandler` that knows how to deal with the `AuthenticatedRequest`:
+
+```php
+namespace Sample\Security;
+
+use Commando\Web\Request;
+use Commando\Web\RequestHandler;
+use Commando\Web\Response;
+use Sample\Core\NotAuthenticatedResponse;
+
+class GuardedRequestHandler implements RequestHandler
+{
+    private $guard;
+    private $securedHandler;
+
+    public function __construct(Guard $guard, AuthenticatedRequestHandler $securedHandler)
+    {
+        $this->guard = $guard;
+        $this->securedHandler = $securedHandler;
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function handle(Request $request)
+    {
+        if ($request->getUserInfo() !== null) {
+            $authenticatedRequest = $this->guard->authenticate($request);
+            return $this->securedHandler->handle($authenticatedRequest);
+        } else {
+            return new NotAuthenticatedResponse('Authentication required');
+        }
+    }
+}
+```
+
+Browse the sample application under `sample/` folder.
