@@ -158,4 +158,4 @@ class GuardedRequestHandler implements RequestHandler
 }
 ```
 
-Browse the sample application under `sample/` folder.
+Browse the sample application under `sample` sub-folder.
