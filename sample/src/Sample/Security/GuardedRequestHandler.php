@@ -6,7 +6,7 @@ use Commando\Web\RequestHandler;
 use Commando\Web\Response;
 use Sample\Core\NotAuthenticatedResponse;
 
-class GuardHandler implements RequestHandler
+class GuardedRequestHandler implements RequestHandler
 {
     private $guard;
     private $securedHandler;

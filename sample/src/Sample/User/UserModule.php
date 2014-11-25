@@ -10,7 +10,7 @@ use Commando\Web\Route;
 use Pimple\Container;
 use Sample\Core\CoreModule;
 use Sample\Security\Guard;
-use Sample\Security\GuardHandler;
+use Sample\Security\GuardedRequestHandler;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
@@ -78,8 +78,8 @@ class UserModule implements Module, RequestHandler
         $request->attributes->add($parameters);
 
         $handler = call_user_func($parameters['handler']);
-        $guardHandler = new GuardHandler($this->guard, $handler);
+        $guardedHandler = new GuardedRequestHandler($this->guard, $handler);
 
-        return $guardHandler->handle($request);
+        return $guardedHandler->handle($request);
     }
 }
