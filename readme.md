@@ -29,8 +29,6 @@ Principles:
 Getting Started
 ===============
 
-Browse the sample application under `sample/` folder.
-
 Commando uses Handlers to processes requests from either the web or command line.
 
 To implement a web RequestHandler, you need to create a Handler class and
@@ -159,3 +157,5 @@ class GuardedRequestHandler implements RequestHandler
     }
 }
 ```
+
+Browse the sample application under `sample/` folder.
