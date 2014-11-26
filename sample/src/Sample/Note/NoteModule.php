@@ -4,40 +4,37 @@ namespace Sample\Note;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Commando\Web\Response;
+use Pimple\Container;
 use Sample\Application;
 use Sample\Rest\ResourceConfig;
-use Sample\Rest\ResourceRepository;
 use Sample\Rest\RestHandler;
-use Sample\Security\Guard;
 
-class NoteHandler implements RequestHandler
+class NoteModule implements RequestHandler
 {
-    private $resourceConfig;
-    private $restHandler;
+    private $container;
 
-    public function __construct(Guard $guard, ResourceRepository $resourceRepository)
+    public function __construct(Application $app)
     {
-        $config = new ResourceConfig(
-            'notes',
-            'Sample\\Note\\Note',
-            [
-                'id',
-                'authorId',
-                'content'
-            ],
-            [
-                'author' => 'Sample\\User\\User'
-            ],
-            new NoteRepository()
-        );
-        $this->resourceConfig = $config;
-
-        $this->restHandler = new RestHandler($guard, $config, $resourceRepository);
-    }
-
-    public function bootstrap(Application $app)
-    {
-        $app->getResourceRepository()->addResourceConfig($this->resourceConfig);
+        $this->container = new Container();
+        $this->container['guard'] = function () use ($app) {
+            return $app->getGuard();
+        };
+        $this->container['resource-repository'] = function () use ($app) {
+            return $app->getResourceRepository();
+        };
+        $this->container['repository'] = function () {
+            return new NoteRepository();
+        };
+        $this->container['resource-config'] = function () {
+            return new NoteResourceConfig($this->container['repository']);
+        };
+        $this->container['rest-handler'] = function () {
+            return new RestHandler(
+                $this->container['guard'],
+                $this->container['resource-repository'],
+                $this->container['resource-config']
+            );
+        };
     }
 
     /**
@@ -46,6 +43,14 @@ class NoteHandler implements RequestHandler
      */
     public function handle(Request $request)
     {
-        return $this->restHandler->handle($request);
+        return $this->container['rest-handler']->handle($request);
+    }
+
+    /**
+     * @return ResourceConfig
+     */
+    public function getResourceConfig()
+    {
+        return $this->container['resource-config'];
     }
 }

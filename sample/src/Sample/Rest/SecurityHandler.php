@@ -7,7 +7,7 @@ use Sample\Core\NotAllowedResponse;
 use Sample\Security\Guard;
 use Sample\Security\Roles;
 
-class SecuredHandler implements RequestHandler
+class SecurityHandler implements RequestHandler
 {
     private $guard;
     private $handler;

@@ -1,7 +1,15 @@
 <?php
 namespace Sample\Rest;
 
-class EntityRepository
+interface EntityRepository
 {
+    public function find($id);
 
+    public function findAll();
+
+    public function count();
+
+    public function save($entity);
+
+    public function remove($id);
 }

@@ -2,24 +2,22 @@
 namespace Sample\Rest\Handler;
 
 use Commando\Web\Request;
-use Commando\Web\RequestHandler;
-use Sample\Rest\ResourceRepository;
+use Sample\Core\NotFoundResponse;
 use Sample\Rest\ResourceResponse;
 
-class GetHandler implements RequestHandler
+class GetHandler extends AbstractHandler
 {
-    private $repository;
-
-    public function __construct(ResourceRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function handle(Request $request)
     {
         $id = $request->fromRoute('id');
-        $resource = $this->repository->find($id);
+        $expand = explode(',', $request->query->get('expand', ''));
 
-        return new ResourceResponse($resource, $request);
+        $class = $this->config->getClass();
+        $resource = $this->repository->find($class, $id, $expand);
+        if ($resource === null) {
+            return new NotFoundResponse("Not found");
+        } else {
+            return new ResourceResponse($resource, $request);
+        }
     }
 }

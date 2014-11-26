@@ -3,23 +3,17 @@ namespace Sample\Rest\Handler;
 
 use Commando\Web\Json\JsonResponse;
 use Commando\Web\Request;
-use Commando\Web\RequestHandler;
-use Sample\Rest\ResourceRepository;
 
-class DeleteHandler implements RequestHandler
+class DeleteHandler extends AbstractHandler
 {
-    private $repository;
-
-    public function __construct(ResourceRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function handle(Request $request)
     {
         $id = $request->fromRoute('id');
-        $this->repository->remove($id);
+        $this->config->getRepository()->remove($id);
 
-        return new JsonResponse(['status' => 'success']);
+        return new JsonResponse([
+            'status' => 'success',
+            'message' => 'Deleted successfully'
+        ]);
     }
 }

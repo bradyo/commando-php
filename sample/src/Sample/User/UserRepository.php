@@ -1,7 +1,9 @@
 <?php
 namespace Sample\User;
 
-class UserRepository
+use Sample\Rest\EntityRepository;
+
+class UserRepository implements EntityRepository
 {
     /**
      * @var User[]
@@ -40,6 +42,21 @@ class UserRepository
     public function findAll()
     {
         return array_values($this->usersById);
+    }
+
+    public function count()
+    {
+        return count(array_values($this->usersById));
+    }
+
+    public function save($user)
+    {
+        throw new \RuntimeException("Not implements");
+    }
+
+    public function remove($id)
+    {
+        throw new \RuntimeException("Not implements");
     }
 
     private function generateUser($id, $email)

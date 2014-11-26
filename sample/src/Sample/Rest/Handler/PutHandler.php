@@ -2,21 +2,12 @@
 namespace Sample\Rest\Handler;
 
 use Commando\Web\Request;
-use Commando\Web\RequestHandler;
-use Commando\Web\Response;
-use Sample\Rest\ResourceRepository;
+use Sample\Core\ErrorResponse;
 
-class PutHandler implements RequestHandler
+class PutHandler extends AbstractHandler
 {
-    private $repository;
-
-    public function __construct(ResourceRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function handle(Request $request)
     {
-        return new Response('put');
+        return new ErrorResponse('Resource PUT not implemented');
     }
 }

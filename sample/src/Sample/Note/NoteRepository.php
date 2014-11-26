@@ -1,7 +1,9 @@
 <?php
 namespace Sample\Note;
 
-class NoteRepository
+use Sample\Rest\EntityRepository;
+
+class NoteRepository implements EntityRepository
 {
     private $notesById;
 
@@ -16,7 +18,11 @@ class NoteRepository
 
     public function find($id)
     {
-        return $this->notesById[$id];
+        if (isset($this->notesById[$id])) {
+            return $this->notesById[$id];
+        } else {
+            return null;
+        }
     }
 
     public function findAll()
@@ -29,7 +35,11 @@ class NoteRepository
         return count($this->notesById);
     }
 
-    public function save(Note $note)
+    /**
+     * @param Note $note
+     * @return Note
+     */
+    public function save($note)
     {
         if ($note->getId() === null) {
             $nextId = max(array_keys($this->notesById)) + 1;

@@ -4,16 +4,23 @@ namespace Sample\Rest;
 class ResourceConfig
 {
     private $path;
-    private $className;
+    private $class;
     private $fields;
-    private $relations;
+    private $relationClassMap;
+    private $repository;
 
-    public function __construct($path, $className, $fields, $relations)
-    {
+    public function __construct(
+        $path,
+        $class,
+        EntityRepository $repository,
+        array $fields,
+        array $relationClassMap = []
+    ) {
         $this->path = $path;
-        $this->className = $className;
+        $this->class = $class;
         $this->fields = $fields;
-        $this->relations = $relations;
+        $this->relationClassMap = $relationClassMap;
+        $this->repository = $repository;
     }
 
     public function getPath()
@@ -21,9 +28,9 @@ class ResourceConfig
         return $this->path;
     }
 
-    public function getClassName()
+    public function getClass()
     {
-        return $this->className;
+        return $this->class;
     }
 
     public function getFields()
@@ -33,6 +40,16 @@ class ResourceConfig
 
     public function getRelations()
     {
-        return $this->relations;
+        return array_keys($this->relationClassMap);
+    }
+
+    public function getRelationClass($relation)
+    {
+        return $this->relationClassMap[$relation];
+    }
+
+    public function getRepository()
+    {
+        return $this->repository;
     }
 }

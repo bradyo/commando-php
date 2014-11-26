@@ -3,27 +3,23 @@ namespace Sample\Rest;
 
 use Commando\Web\Json\JsonResponse;
 use Commando\Web\Request;
-use Commando\Web\Response;
 
-class ResourceResponse extends Response
+class ResourceResponse extends JsonResponse
 {
-    private $resource;
-    private $request;
-
     public function __construct(Resource $resource, Request $request)
     {
-        $expand = $request->query->get('expand', '');
-        if (strstr(',', $expand)) {
-            $expands = explode(',', $expand);
-        } else {
-            $expands = array($expand);
+        $links = [];
+        foreach ($resource->getLinks() as $link) {
+            $link['uri'] = $request->getSchemeAndHttpHost() . '/' . $link['uri'];
+            $links[] = $link;
         }
 
         $content = [
-            'uri' => $resource->getUri(),
+            'uri' => $request->getSchemeAndHttpHost() . '/' . $resource->getUri(),
             'data' => $resource->getData(),
-            'links' => $resource->getLinks()
+            'links' =>$links
         ];
-        return new JsonResponse($content, 200);
+
+        parent::__construct($content, 200);
     }
 }

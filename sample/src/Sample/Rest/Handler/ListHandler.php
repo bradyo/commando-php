@@ -2,21 +2,17 @@
 namespace Sample\Rest\Handler;
 
 use Commando\Web\Request;
-use Commando\Web\RequestHandler;
-use Commando\Web\Response;
-use Sample\Rest\ResourceRepository;
+use Sample\Rest\ResourceResponse;
 
-class ListHandler implements RequestHandler
+class ListHandler extends AbstractHandler
 {
-    private $repository;
-
-    public function __construct(ResourceRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function handle(Request $request)
     {
-        return new Response('list');
+        $expand = explode(',', $request->query->get('expand', ''));
+
+        $class = $this->config->getClass();
+        $resource = $this->repository->findAll($class, $expand);
+
+        return new ResourceResponse($resource, $request);
     }
 }
