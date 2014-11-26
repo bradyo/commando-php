@@ -76,8 +76,63 @@ $app = new \Sample\Application($config);
 $app->handleRequest();
 ```
 
+Start the application on a local port:
+
 ```sh
 php -S localhost:8000
+```
+
+```
+curl --user admin:password -H 'Content-type: application/json' -X GET localhost:8000/notes?expand=author
+{
+   "uri": "http:\/\/localhost:8000\/notes",
+   "data": {
+       "total": 3,
+       "items": [
+           {
+               "id": 1,
+               "authorId": 1,
+               "content": "hello there",
+               "author": {
+                   "id": 1,
+                   "email": "admin@domain.com"
+               }
+           },
+           {
+               "id": 2,
+               "authorId": 1,
+               "content": "hello again",
+               "author": {
+                   "id": 1,
+                   "email": "admin@domain.com"
+               }
+           },
+           {
+               "id": 3,
+               "authorId": 2,
+               "content": "oh hai",
+               "author": {
+                   "id": 2,
+                   "email": "somebody1@domain.com"
+               }
+           }
+       ]
+   },
+   "links": [
+       {
+           "rel": "self",
+           "uri": "http:\/\/localhost:8000\/notes"
+       },
+       {
+           "rel": "first",
+           "uri": "http:\/\/localhost:8000\/notes?offset=0"
+       },
+       {
+           "rel": "next",
+           "uri": "http:\/\/localhost:8000\/notes?offset=10"
+       }
+   ]
+}
 ```
 
 Request Handler Example
