@@ -229,7 +229,7 @@ class RestRequestHandler implements RequestHandler
 ```
 
 Building such a compositional interface takes away all the hard work of
-creating individual `RequestHandler` classes for each HTTP method. We need only
+creating individual `RequestHandler` classes for each HTTP method, we need only
 create a RestHandler with the required arguments. An example of creating
 such a Request handler might look something like this:
 
