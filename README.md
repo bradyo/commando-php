@@ -100,8 +100,10 @@ class PostUserHandler implements AuthenticatedRequestHandler
     private $userPostValidator;
     private $userService;
 
-    public function __construct(UserPostValidator $userFormValidator, UserService $userService)
-    {
+    public function __construct(
+        UserPostValidator $userFormValidator,
+        UserService $userService
+    ) {
         $this->userPostValidator = $userFormValidator;
         $this->userService = $userService;
     }
@@ -163,8 +165,10 @@ class GuardedRequestHandler implements RequestHandler
     private $guard;
     private $securedHandler;
 
-    public function __construct(Guard $guard, AuthenticatedRequestHandler $securedHandler)
-    {
+    public function __construct(
+        Guard $guard,
+        AuthenticatedRequestHandler $securedHandler
+    ) {
         $this->guard = $guard;
         $this->securedHandler = $securedHandler;
     }
@@ -179,7 +183,7 @@ class GuardedRequestHandler implements RequestHandler
             $authenticatedRequest = $this->guard->authenticate($request);
             return $this->securedHandler->handle($authenticatedRequest);
         } else {
-            return new NotAuthenticatedResponse('Authentication required');
+            return new Response('Authentication required', 401);
         }
     }
 }
