@@ -31,8 +31,8 @@ Getting Started
 
 Commando uses Handlers to processes requests from either the web or command line.
 
-To implement a web RequestHandler, you need to create a Handler class and
-register a Route with the application.
+To implement a web `RequestHandler`, you need to create a Handler class and
+register a `Route` with the application.
 
 ```php
 namespace Sample;
@@ -134,6 +134,7 @@ clear injection points for stubs and mocks.
 The control flow is also much easier to follow since the handler must explicitly create
 and return a `Response` object or delegate to an object that can give one for it to return.
 
+
 Delegating to Decorated RequestHandlers
 ---------------------------------------
 
@@ -192,10 +193,10 @@ class GuardedRequestHandler implements RequestHandler
 Compositional Rest Modules
 --------------------------
 
-You have to create separate RequestHandler classes for every action and that results
+You have to create separate `RequestHandler` classes for every action and that results
 in a lot more classes than a conventional MVC architecture that groups actions into
 a single class. To take advantage of the separation, you need to create compositions of
-individual RequestHandler classes into more powerful RequestHandler classes.
+individual `RequestHandler` classes into more powerful `RequestHandler` classes.
 
 To demonstrate how this can be done, we will create a `RestHandler` that implements
 `RequestHandler` and routes the various GET, POST, PUT, DELETE requests to internal
@@ -230,8 +231,8 @@ class RestRequestHandler implements RequestHandler
 
 Building such a compositional interface takes away all the hard work of
 creating individual `RequestHandler` classes for each HTTP method, we need only
-create a RestHandler with the required arguments. An example of creating
-such a Request handler might look something like this:
+create a `RestHandler` with the required arguments. An example of constructing
+such a request handler would look something like the following:
 
 ```php
 // create a RestHandler for resources
@@ -253,7 +254,7 @@ $request = new Request($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
 $response = $noteHandler->handle($request);
 ```
 
-Using composition, you can also create a RequestHandler one level higher that contains
+Using composition, you can also create a `RequestHandler` one level higher that contains
 individual `RestHandler` objects for each resource and delegates down to them using
 it's own routing.
 
