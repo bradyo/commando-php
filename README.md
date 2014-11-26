@@ -291,7 +291,7 @@ php -S localhost:8000
 ```
 
 ```
-curl -H 'Content-type: application/json' -X GET localhost:8000/users/1
+curl -H 'Content-type: application/json' localhost:8000/users/1
 {
     "status": "error",
     "message": "Authentication required"
@@ -300,7 +300,8 @@ curl -H 'Content-type: application/json' -X GET localhost:8000/users/1
 
 ```
 curl --user admin:password -H 'Content-type: application/json' \
--X POST -d '{"email":"admin@domain.com","password":"12324234"}' localhost:8000/users
+-X POST -d '{"email":"admin@domain.com","password":"12324234"}' \
+localhost:8000/users
 {
     "status": "error",
     "message": "Invalid request",
@@ -318,7 +319,8 @@ curl --user admin:password -H 'Content-type: application/json' \
 ```
 
 ```
-curl --user admin:password -H 'Content-type: application/json' localhost:8000/notes?expand=author
+curl --user admin:password -H 'Content-type: application/json' \
+localhost:8000/notes?expand=author
 {
    "uri": "http:\/\/localhost:8000\/notes",
    "data": {
