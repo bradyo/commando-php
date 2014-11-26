@@ -247,7 +247,7 @@ $repository = new ResourceRepository([
     $userResourceConfig,
     $noteResourceConfig
 ]);
-$userHandler = new RestRequestHandler($repository, $noteResourceConfig);
+$noteHandler = new RestRequestHandler($repository, $noteResourceConfig);
 
 // process a request
 $request = new Request($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
