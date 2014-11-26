@@ -212,6 +212,7 @@ class RestRequestHandler implements RequestHandler
         $putHandler = new PutHandler($repository, $config);
         $deleteHandler = new DeleteHandler($repository, $config);
 
+        $path = $config->getPath();
         $this->addRoute('list',   Method::GET,    $path,         $listHandler);
         $this->addRoute('post',   Method::POST,   $path,         $postHandler);
         $this->addRoute('get',    Method::GET,    $path.'/{id}', $getHandler);
