@@ -76,64 +76,6 @@ $app = new \Sample\Application($config);
 $app->handleRequest();
 ```
 
-Start the application on a local port:
-
-```sh
-php -S localhost:8000
-```
-
-```
-curl --user admin:password -H 'Content-type: application/json' -X GET localhost:8000/notes?expand=author
-{
-   "uri": "http:\/\/localhost:8000\/notes",
-   "data": {
-       "total": 3,
-       "items": [
-           {
-               "id": 1,
-               "authorId": 1,
-               "content": "hello there",
-               "author": {
-                   "id": 1,
-                   "email": "admin@domain.com"
-               }
-           },
-           {
-               "id": 2,
-               "authorId": 1,
-               "content": "hello again",
-               "author": {
-                   "id": 1,
-                   "email": "admin@domain.com"
-               }
-           },
-           {
-               "id": 3,
-               "authorId": 2,
-               "content": "oh hai",
-               "author": {
-                   "id": 2,
-                   "email": "somebody1@domain.com"
-               }
-           }
-       ]
-   },
-   "links": [
-       {
-           "rel": "self",
-           "uri": "http:\/\/localhost:8000\/notes"
-       },
-       {
-           "rel": "first",
-           "uri": "http:\/\/localhost:8000\/notes?offset=0"
-       },
-       {
-           "rel": "next",
-           "uri": "http:\/\/localhost:8000\/notes?offset=10"
-       }
-   ]
-}
-```
 
 Request Handler Example
 -----------------------
@@ -335,5 +277,96 @@ class AppRequestHandler implements RequestHandler
 }
 ```
 
+
+Running the Sample Application
+==============================
+
 Browse the sample application in the `sample` folder for more examples.
+
+Start the application on a local port:
+
+```sh
+cd ./commando-php/sample/public/
+php -S localhost:8000
+```
+
+```
+curl -H 'Content-type: application/json' -X GET localhost:8000/users/1
+{
+    "status": "error",
+    "message": "Authentication required"
+}
+```
+
+```
+curl --user admin:password -H 'Content-type: application/json' \
+-X POST -d '{"email":"admin@domain.com","password":"12324234"}' localhost:8000/users
+{
+    "status": "error",
+    "message": "Invalid request",
+    "errors": [
+        {
+            "name": "email",
+            "message": "A user with that email already exists"
+        },
+        {
+            "name": "passwordRepeat",
+            "message": "Password repeat does not match password"
+        }
+    ]
+}
+```
+
+```
+curl --user admin:password -H 'Content-type: application/json' localhost:8000/notes?expand=author
+{
+   "uri": "http:\/\/localhost:8000\/notes",
+   "data": {
+       "total": 3,
+       "items": [
+           {
+               "id": 1,
+               "authorId": 1,
+               "content": "hello there",
+               "author": {
+                   "id": 1,
+                   "email": "admin@domain.com"
+               }
+           },
+           {
+               "id": 2,
+               "authorId": 1,
+               "content": "hello again",
+               "author": {
+                   "id": 1,
+                   "email": "admin@domain.com"
+               }
+           },
+           {
+               "id": 3,
+               "authorId": 2,
+               "content": "oh hai",
+               "author": {
+                   "id": 2,
+                   "email": "somebody1@domain.com"
+               }
+           }
+       ]
+   },
+   "links": [
+       {
+           "rel": "self",
+           "uri": "http:\/\/localhost:8000\/notes"
+       },
+       {
+           "rel": "first",
+           "uri": "http:\/\/localhost:8000\/notes?offset=0"
+       },
+       {
+           "rel": "next",
+           "uri": "http:\/\/localhost:8000\/notes?offset=10"
+       }
+   ]
+}
+```
 
