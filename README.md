@@ -125,9 +125,19 @@ class PostUserHandler implements AuthenticatedRequestHandler
 }
 ```
 
-Use Handler interface to construct more sophisticated handlers.
+Each `RequestHandler` has explicit dependencies, making it much easier a developers
+to understand what is going on and also much easier to write unit tests by giving
+clear injection points for stubs and mocks.
+
+The control flow is also much easier to follow since the handler must explicitly create
+and return a `Response` object or delegate to an object that can give one for it to return.
+
+Delegating to Decorated RequestHandlers
+---------------------------------------
+
+The `RequestHandler` interface is used to construct more sophisticated handlers.
 For example, the security handler below uses an authentication service to
-transform a Request into an `AuthenticatedRequest` (decorating the request in
+transform a `Request` into an `AuthenticatedRequest` (decorating the request in
 a type-safe way with a security token), and delegates to an `AuthenticatedRequestHandler`
 that knows how to deal with the `AuthenticatedRequest`:
 
@@ -138,6 +148,15 @@ use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Commando\Web\Response;
 use Sample\Core\NotAuthenticatedResponse;
+
+interface AuthenticatedRequestHandler
+{
+    /**
+     * @param AuthenticatedRequest $request
+     * @return Response
+     */
+    public function handle(AuthenticatedRequest $request);
+}
 
 class GuardedRequestHandler implements RequestHandler
 {
