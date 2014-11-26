@@ -80,8 +80,8 @@ $app->handleRequest();
 php -S localhost:8000
 ```
 
-What a Commando RequestHandler Looks Like
------------------------------------------
+Request Handler Example
+-----------------------
 
 The following example shows just how you might implement a `RequestHandler` to
 handle a form POST for user registration:
