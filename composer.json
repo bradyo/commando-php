@@ -1,6 +1,7 @@
 {
     "minimum-stability": "dev",
     "name": "bradyo/commando-php",
+    "version": "1.0.0-alpha",
     "description": "Experimental PHP framework based on the Symfony2 Components",
     "keywords": ["framework"],
     "homepage": "https://github.com/bradyo/commando-php",
