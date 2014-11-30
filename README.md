@@ -210,16 +210,18 @@ class RestRequestHandler implements RequestHandler
         $deleteHandler = new DeleteHandler($repository, $config);
 
         $path = $config->getPath();
-        $this->addRoute('list',   Method::GET,    $path,         $listHandler);
-        $this->addRoute('post',   Method::POST,   $path,         $postHandler);
-        $this->addRoute('get',    Method::GET,    $path.'/{id}', $getHandler);
-        $this->addRoute('put',    Method::PUT,    $path.'/{id}', $putHandler);
-        $this->addRoute('delete', Method::DELETE, $path.'/{id}', $deleteHandler);
+        $this->router = new Router([
+            new Route('list',   Method::GET,    $path,         $listHandler);
+            new Route('post',   Method::POST,   $path,         $postHandler);
+            new Route('get',    Method::GET,    $path.'/{id}', $getHandler);
+            new Route('put',    Method::PUT,    $path.'/{id}', $putHandler);
+            new Route('delete', Method::DELETE, $path.'/{id}', $deleteHandler);
+        ]);
     }
 
     public function handle(Request $request)
     {
-        $handler = $this->router->getHandler($request);
+        $handler = $this->router->match($request);
         return $handler->handle($request);
     }
 }
@@ -264,14 +266,16 @@ class AppRequestHandler implements RequestHandler
         $noteHandler = new RestRequestHandler($repository, $configs['note']);
         $articleHandler = new RestRequestHandler($repository, $configs['article']);
 
-        $this->addRoute('users',    Method::ANY, '/users[.*]',    $userHandler);
-        $this->addRoute('notes',    Method::ANY, '/notes[.*]',    $noteHandler);
-        $this->addRoute('articles', Method::ANY, '/articles[.*]', $articleHandler);
+        $this->router = new Router([
+            new PathRoute('users',    '/users',    $userHandler),
+            new PathRoute('notes',    '/notes',    $noteHandler),
+            new PathRoute('articles', '/articles', $articleHandler)
+        ]);
     }
 
     public function handle(Request $request)
     {
-        $handler = $this->router->getHandler($request);
+        $handler = $this->router->match($request);
         return $handler->handle($request);
     }
 }
