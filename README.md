@@ -46,7 +46,7 @@ use Commando\Web\RequestHandler;
 
 class RootHandler implements RequestHandler
 {
-    public function handle(Request $request)
+    public function handle(Request $request, MatchedRoute $route)
     {
         return new Response("Success!", 200);
     }
@@ -56,26 +56,21 @@ class RootHandler implements RequestHandler
 ```php
 namespace Sample;
 
-use Commando\Application as CommandoApplication;
-
-class Application extends CommandoApplication
+class Application extends \Commando\Application
 {
-    public function __construct($configPath)
+    public function __construct()
     {
-        parent::__construct($configPath);
-        $route = new Route(Method::GET, '/', new RootHandler());
-        $this->addRoute('home', $route);
+        parent::__construct();
+        $this->setWebRequestHandler(new RootHandler());
     }
 }
-
 ```
 
 Make a script to create and execute your application in your web server folder:
 
 ```php
 require_once(__DIR__ . '/bootstrap.php');
-$config = require(__DIR__ . '/config/config.php');
-$app = new \Sample\Application($config);
+$app = new \Sample\Application();
 $app->handleRequest();
 ```
 
