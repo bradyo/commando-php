@@ -1,9 +1,6 @@
 <?php
 namespace Sample;
 
-use Commando\Application as CommandoApplication;
-use Commando\Web\Method;
-use Commando\Web\Route;
 use Pimple\Container;
 use Sample\Note\NoteModule;
 use Sample\Rest\ResourceRepository;
@@ -11,17 +8,20 @@ use Sample\Security\Guard;
 use PDO;
 use Sample\User\UserModule;
 
-class Application extends CommandoApplication
+class Application extends \Commando\Application
 {
+    private $config;
     private $container;
 
     public function __construct($configPath)
     {
-        parent::__construct($configPath);
+        parent::__construct();
+
+        $this->config = require($configPath);
 
         $this->container = new Container();
         $this->container['database'] = function () {
-            $pdo = new PDO('sqlite:' . $this->getConfig()['database']['path']);
+            $pdo = new PDO('sqlite:' . $this->config['database']['path']);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $pdo;
         };
@@ -41,21 +41,16 @@ class Application extends CommandoApplication
             ]);
         };
 
-        $this->addRoute('home', new Route(Method::ANY, '/', new RootHandler($this->getConfig())));
-
-        $this->addPathRoute('user-module', 'users', 'user-module');
-        $this->addPathRoute('note-module', 'notes', 'note-module');
+        $this->setShellHandler(new ShellHandler($this));
+        $this->setWebRequestHandler(new WebRequestHandler($this));
     }
 
-    private function addPathRoute($name, $path, $handlerName)
+    /**
+     * return array
+     */
+    public function getConfig()
     {
-        $route = new Route(
-            Method::ANY,
-            '/{match}',
-            $this->container->raw($handlerName),
-            ['match' => $path . '.*']
-        );
-        $this->addRoute($name, $route);
+        return $this->config;
     }
 
     /**

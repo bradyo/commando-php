@@ -1,13 +1,14 @@
 <?php
 namespace Sample\Rest\Handler;
 
-use Commando\Web\Request;
-use Commando\Web\RequestHandler;
+use Commando\Web\MatchedRoute;
 use Sample\Core\ErrorResponse;
 use Sample\Rest\ResourceConfig;
 use Sample\Rest\ResourceRepository;
+use Sample\Security\AuthenticatedRequest;
+use Sample\Security\AuthenticatedRequestHandler;
 
-class AbstractHandler implements RequestHandler
+class AbstractHandler implements AuthenticatedRequestHandler
 {
     protected $repository;
     protected $config;
@@ -18,7 +19,7 @@ class AbstractHandler implements RequestHandler
         $this->config = $config;
     }
 
-    public function handle(Request $request)
+    public function handle(AuthenticatedRequest $request, MatchedRoute $route)
     {
         return new ErrorResponse('Not implemented');
     }

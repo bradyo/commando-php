@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5"
+        "php": ">=5.5",
+        "aura/router": "2.2.0"
     },
     "autoload": {
         "psr-0": {

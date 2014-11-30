@@ -4,7 +4,7 @@ namespace Commando\Shell;
 interface ShellHandler
 {
     /**
-     * @param array $args
+     * @param Command $command
      */
-    public function handle(array $args);
+    public function handle(Command $command);
 }

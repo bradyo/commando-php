@@ -11,7 +11,12 @@ class DefaultExceptionHandler implements ExceptionHandler
      */
     public function handle(Exception $exception)
     {
-        echo "Application exception: " . $exception->getMessage() . "\n";
-        echo ExceptionUtility::getFullTraceAsString($exception);
+        echo "\n";
+        echo "Application error: " . $exception->getMessage() . "\n";
+        echo "\n";
+        echo ExceptionUtility::getFullTraceAsString($exception) . "\n";
+        echo "\n";
+        debug_print_backtrace();
+        echo "\n";
     }
 }

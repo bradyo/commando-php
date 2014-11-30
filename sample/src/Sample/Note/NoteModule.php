@@ -1,9 +1,9 @@
 <?php
 namespace Sample\Note;
 
+use Commando\Web\MatchedRoute;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
-use Commando\Web\Response;
 use Pimple\Container;
 use Sample\Application;
 use Sample\Rest\ResourceConfig;
@@ -37,13 +37,10 @@ class NoteModule implements RequestHandler
         };
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
-    public function handle(Request $request)
+    public function handle(Request $request, MatchedRoute $route)
     {
-        return $this->container['rest-handler']->handle($request);
+        $handler = $this->container['rest-handler'];
+        return $handler->handle($request, $route);
     }
 
     /**

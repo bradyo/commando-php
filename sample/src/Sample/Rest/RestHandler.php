@@ -1,17 +1,21 @@
 <?php
 namespace Sample\Rest;
 
-use Commando\Web\Json\JsonResponse;
+use Commando\Web\MatchedRoute;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Commando\Web\Method;
 use Commando\Web\Route;
+use Commando\Web\Router;
 use Pimple\Container;
-use Sample\Rest\Handler;
+use Sample\Core\NotFoundResponse;
+use Sample\Rest\Handler\DeleteHandler;
+use Sample\Rest\Handler\GetHandler;
+use Sample\Rest\Handler\ListHandler;
+use Sample\Rest\Handler\PostHandler;
+use Sample\Rest\Handler\PutHandler;
 use Sample\Security\Guard;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
+use Sample\Security\GuardedRequestHandler;
 
 class RestHandler implements RequestHandler
 {
@@ -19,7 +23,7 @@ class RestHandler implements RequestHandler
     private $repository;
     private $config;
     private $container;
-    private $routes;
+    private $router;
 
     public function __construct(Guard $guard, ResourceRepository $repository, ResourceConfig $config)
     {
@@ -29,56 +33,41 @@ class RestHandler implements RequestHandler
 
         $this->container = new Container();
         $this->container['list-handler'] = function () {
-            return new Handler\ListHandler($this->repository, $this->config);
+            return new ListHandler($this->repository, $this->config);
         };
         $this->container['post-handler'] = function () {
-            return new Handler\PostHandler($this->repository, $this->config);
+            return new PostHandler($this->repository, $this->config);
         };
         $this->container['get-handler'] = function () {
-            return new Handler\GetHandler($this->repository, $this->config);
+            return new GetHandler($this->repository, $this->config);
         };
         $this->container['put-handler'] = function () {
-            return new Handler\PutHandler($this->repository, $this->config);
+            return new PutHandler($this->repository, $this->config);
         };
         $this->container['delete-handler'] = function () {
-            return new Handler\DeleteHandler($this->repository, $this->config);
+            return new DeleteHandler($this->repository, $this->config);
         };
 
-        $this->routes = new RouteCollection();
-        $this->addRoute('list',   Method::GET,    '',     'list-handler');
-        $this->addRoute('post',   Method::POST,   '',     'post-handler');
-        $this->addRoute('get',    Method::GET,    '/{id}', 'get-handler');
-        $this->addRoute('put',    Method::PUT,    '/{id}', 'put-handler');
-        $this->addRoute('delete', Method::DELETE, '/{id}', 'delete-handler');
+        $basePath = '/' . $config->getPath();
+        $this->router = new Router([
+            new Route('list',   Method::GET,    $basePath,           'list-handler'),
+            new Route('post',   Method::POST,   $basePath,           'post-handler'),
+            new Route('get',    Method::GET,    $basePath . '/{id}', 'get-handler'),
+            new Route('put',    Method::PUT,    $basePath . '/{id}', 'put-handler'),
+            new Route('delete', Method::DELETE, $basePath . '/{id}', 'delete-handler'),
+        ]);
     }
 
-    private function addRoute($name, $method, $value, $handlerName)
+    public function handle(Request $request, MatchedRoute $parentRoute)
     {
-        $route = new Route(
-            $method,
-            $this->config->getPath() . $value,
-            $this->container->raw($handlerName)
+        $route = $this->router->match($request);
+        if ($route === null) {
+            return new NotFoundResponse('Rest route not found');
+        }
+        $handler = new GuardedRequestHandler(
+            $this->guard,
+            $this->container[$route->getHandlerName()]
         );
-        $this->routes->add($name, $route);
-    }
-
-    public function handle(Request $request)
-    {
-        $context = new RequestContext();
-        $context->fromRequest($request);
-        $matcher = new UrlMatcher($this->routes, $context);
-        try {
-            $parameters = $matcher->matchRequest($request);
-        } catch (\Exception $e) {
-            $parameters = [];
-        }
-        if (! isset($parameters['handler'])) {
-            return new JsonResponse('Resource not found', 404);
-        }
-        $request->attributes->add($parameters);
-        $handler = call_user_func($parameters['handler']);
-        $securedHandler = new SecurityHandler($this->guard, $handler);
-
-        return $securedHandler->handle($request);
+        return $handler->handle($request, $route);
     }
 }

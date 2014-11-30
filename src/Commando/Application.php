@@ -1,170 +1,104 @@
 <?php
 namespace Commando;
 
+use Commando\Shell\Command;
 use Commando\Shell\DefaultExceptionHandler;
 use Commando\Shell\DefaultShellHandler;
-use Commando\Shell\ShowConfigHandler;
-use Commando\Web\ControllerResolver;
+use Commando\Shell\ExceptionHandler;
+use Commando\Shell\ShellHandler;
 use Commando\Web\DefaultRequestHandler;
 use Commando\Web\DefaultWebExceptionHandler;
+use Commando\Web\MatchedRoute;
 use Commando\Web\Request;
-use Commando\Web\Method;
-use Commando\Web\Route;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpKernel\EventListener\RouterListener;
-use Symfony\Component\HttpKernel\HttpKernel;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
+use Commando\Web\RequestHandler;
+use Commando\Web\WebExceptionHandler;
 use Exception;
 use ErrorException;
-use Pimple\Container;
 
 abstract class Application
 {
-    protected $config;
-    protected $exceptionHandler;
-    protected $webExceptionHandler;
+    private $shellHandler;
+    private $shellExceptionHandler;
+    private $webRequestHandler;
+    private $webExceptionHandler;
 
-    /**
-     * @var Container of ShellHandler providers
-     */
-    protected $shellHandlers;
-
-    /**
-     * @var Container of RequestHandler providers
-     */
-    protected $requestHandlers;
-
-    /**
-     * @var RouteCollection
-     */
-    protected $routes;
-
-    public function __construct($configPath)
+    public function __construct()
     {
-        ini_set('display_startup_errors', 1);
-        ini_set('display_errors', 1);
-        error_reporting(-1);
+        ini_set('display_startup_errors', 'on');
+        ini_set('display_errors', 'on');
+        error_reporting(0);
 
         set_error_handler(array($this, 'handleError'));
         set_exception_handler(array($this, 'handleException'));
         register_shutdown_function(array($this, 'handleShutdown'));
 
-        $this->config = require($configPath);
-        $this->shellHandlers = new Container();
-        $this->requestHandlers = new Container();
-        $this->routes = new RouteCollection();
-
-        $this->exceptionHandler = new DefaultExceptionHandler();
+        $this->shellHandler = new DefaultShellHandler();
+        $this->shellExceptionHandler = new DefaultExceptionHandler();
+        $this->webRequestHandler = new DefaultRequestHandler();
         $this->webExceptionHandler = new DefaultWebExceptionHandler();
     }
 
-    public function getConfig()
+    public function setShellHandler(ShellHandler $handler)
     {
-        return $this->config;
+        $this->shellHandler = $handler;
     }
 
-    public function addRoute($name, Route $route)
+    public function setShellExceptionHandler(ExceptionHandler $handler)
     {
-        $this->routes->add($name, $route);
+        $this->shellExceptionHandler = $handler;
     }
 
-    private function bootstrap()
+    public function setWebRequestHandler(RequestHandler $handler)
     {
-        $this->shellHandlers['default'] = new DefaultShellHandler();
-        $this->shellHandlers['get-config'] = new ShowConfigHandler($this->config);
+        $this->webRequestHandler = $handler;
+    }
 
-        $this->addRoute('default', new Route(Method::ANY, '/', new DefaultRequestHandler()));
+    public function setWebExceptionHandler(WebExceptionHandler $handler)
+    {
+        $this->webExceptionHandler = $handler;
     }
 
     public function handleError($code, $message, $scriptPath, $lineNumber)
     {
-        // Convert all PHP errors to ErrorException
-        $severity = 1;
-        throw new ErrorException($message, $code, $severity, $scriptPath, $lineNumber, null);
+        throw new ErrorException($message, $code, 1, $scriptPath, $lineNumber, null);
     }
 
     public function handleException(Exception $e)
     {
-        $this->exceptionHandler->handle($e);
+        $this->shellExceptionHandler->handle($e);
     }
 
     public function handleShutdown()
-    {}
+    {
+        $error = error_get_last();
+        if ($error !== null) {
+            $e = new ErrorException($error['message'], $error['type'], 1, $error['file'], $error['line'], null);
+            $this->shellExceptionHandler->handle($e);
+        }
+        exit();
+    }
 
     public function handleShell()
     {
-        global $argc;
+        if (php_sapi_name() != "cli") {
+            throw new ErrorException("Command must be run from shell");
+        }
         global $argv;
-        try {
-            $this->bootstrap();
-            if (php_sapi_name() != "cli") {
-                throw new ErrorException("Application shell must be run from command line");
-            }
-            $handler = $this->shellHandlers['default'];
-            $params = [];
-            if ($argc >= 2) {
-                $name = $argv[1];
-                $handler = $this->shellHandlers[$name];
-                $params = array_slice($argv, 2);
-            }
-            $handler->handle($params);
-        }
-        catch (Exception $e) {
-            $this->exceptionHandler->handle($e);
-        }
+        $request = new Command($argv);
+        $this->shellHandler->handle($request);
     }
 
     public function handleRequest()
     {
-        $this->bootstrap();
-        $request = new Request($_GET, $_POST,  array(), $_COOKIE, $_FILES, $_SERVER);
-        $this->convertRequestBody($request);
-
-        $context = new RequestContext();
-        $context->fromRequest($request);
-        $matcher = new UrlMatcher($this->routes, new RequestContext());
-        $routeListener = new RouterListener($matcher);
-
-        $dispatcher = new EventDispatcher();
-        $dispatcher->addSubscriber($routeListener);
-
-        $resolver = new ControllerResolver();
-        $kernel = new HttpKernel($dispatcher, $resolver);
-
-        $response = null;
-        try {
-            $response = $kernel->handle($request, HttpKernelInterface::MASTER_REQUEST, false);
+        if (php_sapi_name() === "cli") {
+            throw new ErrorException("Must run in web request context");
         }
-        catch (Exception $e) {
+        $request = new Request($_GET, $_POST,  array(), $_COOKIE, $_FILES, $_SERVER);
+        try {
+            $response = $this->webRequestHandler->handle($request, new MatchedRoute());
+        } catch (Exception $e) {
             $response = $this->webExceptionHandler->handle($request, $e);
         }
         $response->send();
-        $kernel->terminate($request, $response);
-        exit;
-    }
-
-    private function convertRequestBody(Request $request)
-    {
-        $method = strtoupper($request->server->get('REQUEST_METHOD', 'GET'));
-        if (in_array($method, ['POST', 'PUT', 'PATCH'])) {
-            // parse request content into params
-            $data = [];
-            if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')) {
-                parse_str($request->getContent(), $data);
-            }
-            else if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/json')) {
-                $data = json_decode($request->getContent(), true);
-            }
-            $request->request = new ParameterBag($data);
-        }
-    }
-
-    public function getRequestHandler($name)
-    {
-        return $this->requestHandlers[$name];
     }
 }

@@ -1,23 +1,21 @@
 <?php
 namespace Sample\User;
 
-use Commando\Web\Json\JsonResponse;
+use Commando\Web\MatchedRoute;
 use Commando\Web\Method;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Commando\Web\Route;
+use Commando\Web\Router;
 use Pimple\Container;
 use Sample\Application;
 use Sample\Core\NotFoundResponse;
 use Sample\Rest\ResourceConfig;
 use Sample\Security\GuardedRequestHandler;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
 
 class UserModule implements RequestHandler
 {
-    private $routes;
+    private $router;
     private $container;
 
     public function __construct(Application $app)
@@ -51,37 +49,24 @@ class UserModule implements RequestHandler
             );
         };
 
-        $this->routes = new RouteCollection();
-        $this->addRoute('get-user', Method::GET, '/users/{id}', 'get-handler');
-        $this->addRoute('list-user', Method::GET, '/users', 'list-handler');
-        $this->addRoute('post-user', Method::POST, '/users', 'post-handler');
+        $this->router = new Router([
+            new Route('get-users', Method::GET, '/users', 'list-handler'),
+            new Route('post-user', Method::POST, '/users', 'post-handler'),
+            new Route('get-user', Method::GET, '/users/{id}', 'get-handler'),
+        ]);
     }
 
-    private function addRoute($name, $method, $value, $handlerName)
+    public function handle(Request $request, MatchedRoute $route)
     {
-        $route = new Route($method, $value, $this->container->raw($handlerName));
-        $this->routes->add($name, $route);
-    }
-
-    public function handle(Request $request)
-    {
-        $context = new RequestContext();
-        $context->fromRequest($request);
-        $matcher = new UrlMatcher($this->routes, $context);
-        try {
-            $parameters = $matcher->matchRequest($request);
-        } catch (\Exception $e) {
-            $parameters = [];
+        $route = $this->router->match($request);
+        if ($route === null) {
+            return new NotFoundResponse('Route not found');
         }
-        if (! isset($parameters['handler'])) {
-            return new NotFoundResponse("Not found");
-        }
-        $request->attributes->add($parameters);
-
-        $handler = call_user_func($parameters['handler']);
-        $guardedHandler = new GuardedRequestHandler($this->container['guard'], $handler);
-
-        return $guardedHandler->handle($request);
+        $handler = new GuardedRequestHandler(
+            $this->container['guard'],
+            $this->container[$route->getHandlerName()]
+        );
+        return $handler->handle($request, $route);
     }
 
     /**

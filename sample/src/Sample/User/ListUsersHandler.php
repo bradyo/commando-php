@@ -1,6 +1,7 @@
 <?php
 namespace Sample\User;
 
+use Commando\Web\MatchedRoute;
 use Sample\Core\NotAllowedResponse;
 use Sample\Security\AuthenticatedRequest;
 use Sample\Security\AuthenticatedRequestHandler;
@@ -15,7 +16,7 @@ class ListUsersHandler implements AuthenticatedRequestHandler
         $this->userRepository = $userRepository;
     }
 
-    public function handle(AuthenticatedRequest $request)
+    public function handle(AuthenticatedRequest $request, MatchedRoute $route)
     {
         $isAdmin = $request->getAccessToken()->hasRole(Roles::ADMIN);
         if (! $isAdmin) {

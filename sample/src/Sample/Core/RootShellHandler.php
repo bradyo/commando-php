@@ -1,11 +1,10 @@
 <?php
-namespace Sample;
+namespace Sample\Core;
 
-use Commando\Web\Json\JsonResponse;
-use Commando\Web\Request;
-use Commando\Web\RequestHandler;
+use Commando\Shell\Command;
+use Commando\Shell\ShellHandler;
 
-class RootHandler implements RequestHandler
+class RootShellHandler implements ShellHandler
 {
     private $config;
 
@@ -14,12 +13,14 @@ class RootHandler implements RequestHandler
         $this->config = $config;
     }
 
-    public function handle(Request $request)
+    public function handle(Command $command)
     {
-        return new JsonResponse([
+        $data = [
             'name' => 'Sample Application',
             'environment' => $this->config['environment'],
             'version' => $this->config['version'],
-        ]);
+        ];
+        print_r($data);
+        echo "\n";
     }
 }

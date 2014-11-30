@@ -3,8 +3,8 @@ namespace Commando\Shell;
 
 class DefaultShellHandler implements ShellHandler
 {
-    public function handle(array $params)
+    public function handle(Command $command)
     {
-        echo "Commando Application Shell\n";
+        echo "No commands available\n";
     }
 }

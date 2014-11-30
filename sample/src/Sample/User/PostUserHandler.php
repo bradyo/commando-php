@@ -1,6 +1,7 @@
 <?php
 namespace Sample\User;
 
+use Commando\Web\MatchedRoute;
 use Sample\Core\NotAllowedResponse;
 use Sample\Core\ValidationErrorResponse;
 use Sample\Security\AuthenticatedRequest;
@@ -18,7 +19,7 @@ class PostUserHandler implements AuthenticatedRequestHandler
         $this->userService = $userService;
     }
 
-    public function handle(AuthenticatedRequest $request)
+    public function handle(AuthenticatedRequest $request, MatchedRoute $route)
     {
         if (! $request->getAccessToken()->hasRole(Roles::ADMIN)) {
             return new NotAllowedResponse('Not allowed to post Users');

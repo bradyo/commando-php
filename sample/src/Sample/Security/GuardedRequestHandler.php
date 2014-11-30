@@ -1,9 +1,9 @@
 <?php
 namespace Sample\Security;
 
+use Commando\Web\MatchedRoute;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
-use Commando\Web\Response;
 use Sample\Core\NotAuthenticatedResponse;
 
 class GuardedRequestHandler implements RequestHandler
@@ -17,15 +17,11 @@ class GuardedRequestHandler implements RequestHandler
         $this->securedHandler = $securedHandler;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
-    public function handle(Request $request)
+    public function handle(Request $request, MatchedRoute $route)
     {
         if ($request->getUserInfo() !== null) {
             $authenticatedRequest = $this->guard->authenticate($request);
-            return $this->securedHandler->handle($authenticatedRequest);
+            return $this->securedHandler->handle($authenticatedRequest, $route);
         } else {
             return new NotAuthenticatedResponse('Authentication required');
         }

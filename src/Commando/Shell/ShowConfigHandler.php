@@ -10,10 +10,7 @@ class ShowConfigHandler implements ShellHandler
         $this->config = $config;
     }
 
-    /**
-     * @param array $args
-     */
-    public function handle(array $args)
+    public function handle(Command $command)
     {
         print_r($this->config);
     }

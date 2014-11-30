@@ -1,26 +1,51 @@
 <?php
 namespace Commando\Web;
 
-use Symfony\Component\Routing\Route as SymfonyRoute;
-
-class Route extends SymfonyRoute
+class Route
 {
+    private $name;
+    private $method;
+    private $path;
+    private $handlerName;
+
+    protected $isGreedy = false;
+
     /**
+     * @param string $name
      * @param string $method
      * @param string $path
-     * @param RequestHandler|callable $handler
-     * @param array $requirements
+     * @param string $handlerName
      */
-    public function __construct($method, $path, $handler, $requirements = [])
+    public function __construct($name, $method, $path, $handlerName)
     {
-        $methods = [];
-        if ($method !== null && $method != Method::ANY) {
-            $methods = [strtoupper($method)];
-        }
-        $defaults = ['handler' => $handler];
-        $options = [];
-        $host = '';
-        $schemes = [];
-        parent::__construct($path, $defaults, $requirements, $options, $host, $schemes, $methods);
+        $this->name = $name;
+        $this->method = $method;
+        $this->path = $path;
+        $this->handlerName = $handlerName;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function getHandlerName()
+    {
+        return $this->handlerName;
+    }
+
+    public function isGreedy()
+    {
+        return $this->isGreedy;
     }
 }
