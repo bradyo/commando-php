@@ -40,9 +40,10 @@ register it with the application.
 ```php
 namespace Sample;
 
-use Commando\Web\Json\JsonResponse;
+use Commando\Web\Response;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
+use Commando\Web\MatchedRoute;
 
 class RootHandler implements RequestHandler
 {
