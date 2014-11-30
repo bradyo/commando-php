@@ -35,7 +35,7 @@ Getting Started
 Commando uses Handlers to processes requests from either the web or command line.
 
 To implement a web `RequestHandler`, you need to create a Handler class and
-register a `Route` with the application.
+register it with the application.
 
 ```php
 namespace Sample;
