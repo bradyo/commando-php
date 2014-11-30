@@ -29,6 +29,9 @@ Principles:
 Getting Started
 ===============
 
+![Get Started](http://img2.wikia.nocookie.net/__cb20100729153438/uncyclopedia/images/9/9d/Arnie_shooting.jpg "Get Started")
+
+
 Commando uses Handlers to processes requests from either the web or command line.
 
 To implement a web `RequestHandler`, you need to create a Handler class and
