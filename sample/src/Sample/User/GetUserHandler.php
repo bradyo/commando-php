@@ -1,7 +1,6 @@
 <?php
 namespace Sample\User;
 
-use Commando\Web\MatchedRoute;
 use Sample\Core\NotFoundResponse;
 use Sample\Security\AuthenticatedRequest;
 use Sample\Security\AuthenticatedRequestHandler;
@@ -16,9 +15,9 @@ class GetUserHandler implements AuthenticatedRequestHandler
         $this->userRepository = $userRepository;
     }
 
-    public function handle(AuthenticatedRequest $request, MatchedRoute $route)
+    public function handle(AuthenticatedRequest $request)
     {
-        $id = $route->getParam('id');
+        $id = $request->getMatchedRoute()->getParam('id');
         $user = $this->userRepository->find($id);
 
         $isAdmin = $request->getAccessToken()->hasRole(Roles::ADMIN);

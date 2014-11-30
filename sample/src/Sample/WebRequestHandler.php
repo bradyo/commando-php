@@ -1,7 +1,7 @@
 <?php
 namespace Sample;
 
-use Commando\Web\MatchedRoute;
+use Commando\Web\MatchedRequest;
 use Commando\Web\Method;
 use Commando\Web\PathRoute;
 use Commando\Web\Request;
@@ -39,21 +39,21 @@ class WebRequestHandler implements RequestHandler
         ]);
     }
 
-    public function handle(Request $parentRequest, MatchedRoute $parentRoute)
+    public function handle(Request $request)
     {
-        try {
-            $request = $this->convertRequestBody($parentRequest);
-        } catch (\Exception $e) {
-            return new ErrorResponse("Failed to convert request body");
-        }
-
         $route = $this->router->match($request);
         if ($route === null) {
             return new NotFoundResponse('Route not found');
         }
-        $handler = $this->container[$route->getHandlerName()];
+        try {
+            $convertedRequest = $this->convertRequestBody($request);
+        } catch (\Exception $e) {
+            return new ErrorResponse("Failed to convert request body");
+        }
 
-        return $handler->handle($request, $route);
+        $handler = $this->container[$route->getValue()];
+
+        return $handler->handle(new MatchedRequest($convertedRequest, $route));
     }
 
     private function convertRequestBody(Request $request)

@@ -1,7 +1,7 @@
 <?php
 namespace Sample\Rest;
 
-use Commando\Web\MatchedRoute;
+use Commando\Web\MatchedRequest;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Commando\Web\Method;
@@ -48,17 +48,17 @@ class RestHandler implements RequestHandler
             return new DeleteHandler($this->repository, $this->config);
         };
 
-        $basePath = '/' . $config->getPath();
+        $path = '/' . $config->getPath();
         $this->router = new Router([
-            new Route('list',   Method::GET,    $basePath,           'list-handler'),
-            new Route('post',   Method::POST,   $basePath,           'post-handler'),
-            new Route('get',    Method::GET,    $basePath . '/{id}', 'get-handler'),
-            new Route('put',    Method::PUT,    $basePath . '/{id}', 'put-handler'),
-            new Route('delete', Method::DELETE, $basePath . '/{id}', 'delete-handler'),
+            new Route('list',   Method::GET,    $path,           'list-handler'),
+            new Route('post',   Method::POST,   $path,           'post-handler'),
+            new Route('get',    Method::GET,    $path . '/{id}', 'get-handler'),
+            new Route('put',    Method::PUT,    $path . '/{id}', 'put-handler'),
+            new Route('delete', Method::DELETE, $path . '/{id}', 'delete-handler'),
         ]);
     }
 
-    public function handle(Request $request, MatchedRoute $parentRoute)
+    public function handle(Request $request)
     {
         $route = $this->router->match($request);
         if ($route === null) {
@@ -66,8 +66,8 @@ class RestHandler implements RequestHandler
         }
         $handler = new GuardedRequestHandler(
             $this->guard,
-            $this->container[$route->getHandlerName()]
+            $this->container[$route->getValue()]
         );
-        return $handler->handle($request, $route);
+        return $handler->handle(new MatchedRequest($request, $route));
     }
 }

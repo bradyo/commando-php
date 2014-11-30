@@ -95,7 +95,7 @@ abstract class Application
         }
         $request = new Request($_GET, $_POST,  array(), $_COOKIE, $_FILES, $_SERVER);
         try {
-            $response = $this->webRequestHandler->handle($request, new MatchedRoute());
+            $response = $this->webRequestHandler->handle($request);
         } catch (Exception $e) {
             $response = $this->webExceptionHandler->handle($request, $e);
         }

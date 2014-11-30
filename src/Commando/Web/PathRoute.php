@@ -6,11 +6,15 @@ class PathRoute extends Route
     /**
      * @param string $name
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $value
      */
-    public function __construct($name, $path, $handlerName)
+    public function __construct($name, $path, $value)
     {
-        parent::__construct($name, Method::ANY, $path, $handlerName);
-        $this->isGreedy = true;
+        parent::__construct($name, Method::ANY, $path, $value);
+    }
+
+    public function isGreedy()
+    {
+        return true;
     }
 }

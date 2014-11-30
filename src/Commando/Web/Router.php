@@ -24,7 +24,7 @@ class Router
             $auraRoute = $this->auraRouter->getRoutes()->add(
                 $route->getName(),
                 $path,
-                $route->getHandlerName()
+                $route->getValue()
             );
             if ($route->isGreedy()) {
                 $auraRoute->setWildcard('_match');

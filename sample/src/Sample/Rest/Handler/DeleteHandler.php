@@ -2,14 +2,13 @@
 namespace Sample\Rest\Handler;
 
 use Commando\Web\Json\JsonResponse;
-use Commando\Web\MatchedRoute;
 use Sample\Security\AuthenticatedRequest;
 
 class DeleteHandler extends AbstractHandler
 {
-    public function handle(AuthenticatedRequest $request, MatchedRoute $route)
+    public function handle(AuthenticatedRequest $request)
     {
-        $id = $route->getParam('id');
+        $id = $request->getMatchedRoute()->getParam('id');
         $this->config->getRepository()->remove($id);
 
         return new JsonResponse([

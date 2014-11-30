@@ -5,7 +5,7 @@ class MatchedRoute extends Route
 {
     private $params;
 
-    public function __construct(Route $route = null, array $params = [])
+    public function __construct(Route $route, array $params = [])
     {
         if ($route === null) {
             $route = new Route(null, Method::ANY, '/', null);
@@ -14,7 +14,7 @@ class MatchedRoute extends Route
             $route->getName(),
             $route->getMethod(),
             $route->getPath(),
-            $route->getHandlerName()
+            $route->getValue()
         );
         $this->params = $params;
     }

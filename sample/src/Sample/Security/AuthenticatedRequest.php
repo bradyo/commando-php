@@ -16,7 +16,8 @@ class AuthenticatedRequest extends Request
             $request->cookies->all(),
             $request->files->all(),
             $request->server->all(),
-            $request->content
+            $request->content,
+            $request->getMatchedRoute()
         );
         $this->accessToken = $accessToken;
     }

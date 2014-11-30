@@ -1,7 +1,6 @@
 <?php
 namespace Sample\Rest;
 
-use Commando\Web\MatchedRoute;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Sample\Core\NotAllowedResponse;
@@ -19,12 +18,12 @@ class SecurityHandler implements RequestHandler
         $this->handler = $handler;
     }
 
-    public function handle(Request $request, MatchedRoute $route)
+    public function handle(Request $request)
     {
         $authenticatedRequest = $this->guard->authenticate($request);
         if (! $authenticatedRequest->getAccessToken()->hasRole(Roles::ADMIN)) {
             return new NotAllowedResponse("Not allowed");
         }
-        return $this->handler->handle($request, $route);
+        return $this->handler->handle($request);
     }
 }

@@ -2,7 +2,6 @@
 namespace Sample\Core;
 
 use Commando\Web\Json\JsonResponse;
-use Commando\Web\MatchedRoute;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 
@@ -15,7 +14,7 @@ class RootHandler implements RequestHandler
         $this->config = $config;
     }
 
-    public function handle(Request $request, MatchedRoute $route)
+    public function handle(Request $request)
     {
         return new JsonResponse([
             'name' => 'Sample Application',

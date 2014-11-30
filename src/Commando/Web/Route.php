@@ -6,22 +6,20 @@ class Route
     private $name;
     private $method;
     private $path;
-    private $handlerName;
-
-    protected $isGreedy = false;
+    private $value;
 
     /**
      * @param string $name
      * @param string $method
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $value
      */
-    public function __construct($name, $method, $path, $handlerName)
+    public function __construct($name, $method, $path, $value)
     {
         $this->name = $name;
         $this->method = $method;
         $this->path = $path;
-        $this->handlerName = $handlerName;
+        $this->value = $value;
     }
 
     public function getName()
@@ -39,13 +37,13 @@ class Route
         return $this->path;
     }
 
-    public function getHandlerName()
+    public function getValue()
     {
-        return $this->handlerName;
+        return $this->value;
     }
 
     public function isGreedy()
     {
-        return $this->isGreedy;
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Sample\User;
 
+use Commando\Web\MatchedRequest;
 use Commando\Web\MatchedRoute;
 use Commando\Web\Method;
 use Commando\Web\Request;
@@ -56,7 +57,7 @@ class UserModule implements RequestHandler
         ]);
     }
 
-    public function handle(Request $request, MatchedRoute $route)
+    public function handle(Request $request)
     {
         $route = $this->router->match($request);
         if ($route === null) {
@@ -64,9 +65,9 @@ class UserModule implements RequestHandler
         }
         $handler = new GuardedRequestHandler(
             $this->container['guard'],
-            $this->container[$route->getHandlerName()]
+            $this->container[$route->getValue()]
         );
-        return $handler->handle($request, $route);
+        return $handler->handle(new MatchedRequest($request, $route));
     }
 
     /**

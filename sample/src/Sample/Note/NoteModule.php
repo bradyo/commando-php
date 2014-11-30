@@ -1,7 +1,6 @@
 <?php
 namespace Sample\Note;
 
-use Commando\Web\MatchedRoute;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
 use Pimple\Container;
@@ -37,10 +36,10 @@ class NoteModule implements RequestHandler
         };
     }
 
-    public function handle(Request $request, MatchedRoute $route)
+    public function handle(Request $request)
     {
         $handler = $this->container['rest-handler'];
-        return $handler->handle($request, $route);
+        return $handler->handle($request);
     }
 
     /**
