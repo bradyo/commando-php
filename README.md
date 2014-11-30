@@ -227,8 +227,9 @@ class RestRequestHandler implements RequestHandler
 
 Building such a compositional interface takes away all the hard work of
 creating individual `RequestHandler` classes for each HTTP method, we need only
-create a `RestHandler` with the required arguments. An example of constructing
-such a request handler would look something like the following:
+create a `RestHandler` with the required arguments. Constructing
+such a request handler would look like the following, and is therefore easy to write
+test cases against:
 
 ```php
 // create a RestHandler for resources
