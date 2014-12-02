@@ -5,11 +5,10 @@ body {
 }
 #cssmenu {
     margin: 1em auto;
-    width: 576px;
+    width: 800px;
 }
 #cssmenu li {
     text-align: center;
-    width: 140px;
 
 }
 #content {

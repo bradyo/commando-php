@@ -453,5 +453,6 @@ class TemplatedRequestHandler implements \Commando\Web\RequestHandler
 Run the full example:
 
 ```bash
-sh /sample-twig/start.sh
+cd sample-twig/
+sh ./start.sh
 ```
