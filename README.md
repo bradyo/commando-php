@@ -43,11 +43,10 @@ namespace Sample;
 use Commando\Web\Response;
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
-use Commando\Web\MatchedRoute;
 
 class RootHandler implements RequestHandler
 {
-    public function handle(Request $request, MatchedRoute $route)
+    public function handle(Request $request)
     {
         return new Response("Success!", 200);
     }
