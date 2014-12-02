@@ -1,0 +1,11 @@
+{% extends "layout.twig" %}
+
+{% block title %}
+    Home - Commando Sample
+{% endblock %}
+
+{% block content %}
+    <h1>Home</h1>
+    <p>Hello {{ name|e }}! Welcome to the site.</p>
+    <p><a href="/?name=Admin">Sign In</a></p>
+{% endblock %}
