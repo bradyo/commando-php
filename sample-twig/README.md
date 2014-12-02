@@ -45,10 +45,22 @@ interface Action
 }
 ```
 
+```php
+class HomeAction implements Action
+{
+    public function handle(Request $request)
+    {
+        return new View('home', [
+            'name' => $request->query->get('name', 'Anonymous Coward')
+        ]);
+    }
+}
+```
+
 Now our Commando `RequestHandler` needs to delegate `Requests` to `Action` instances
 and convert the returned `View` object into a HTTP `Response` object using Twig.
 
-```
+```php
 class RequestHandler implements \Commando\Web\RequestHandler
 {
     private $twig;
