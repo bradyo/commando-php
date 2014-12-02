@@ -49,9 +49,9 @@ class HomeAction implements Action
 {
     public function handle(Request $request)
     {
-        return new View('home', [
-            'name' => $request->query->get('name', 'Anonymous Coward')
-        ]);
+        $name = $request->query->get('name', 'Anonymous Coward');
+
+        return new View('home', ['name' => $name]);
     }
 }
 ```
