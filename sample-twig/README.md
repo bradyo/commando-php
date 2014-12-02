@@ -1,5 +1,5 @@
-Integrating View Templates
-==========================
+Integrating a Template Engine
+=============================
 
 The free-form nature of Commando can make it seem difficult to get started building a
 full-featured web app. The flexibility of Commando should not be mistaken for weakness,
