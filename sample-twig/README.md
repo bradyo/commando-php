@@ -2,12 +2,11 @@ Integrating a Template Engine
 =============================
 
 The free-form nature of Commando can make it seem difficult to get started building a
-full-featured web app. The flexibility of Commando should not be mistaken for weakness,
-see how easy it is to integrate the powerful [Twig Template Engine](http://twig.sensiolabs.org/)
-into your application.
+full-featured web app. See how easy it is to integrate Commando with the powerful
+[Twig Template Engine](http://twig.sensiolabs.org/).
 
-To make our API simple to use, we start by making a new `Action` interface similar to
-RequestHandler, but returns a `View` object instead. The `View` object just holds a view name
+We start by making a new `Action` interface similar to `RequestHandler`,
+but returns a `View` object instead of a `Response`. The `View` object just holds a view name
 and template parameters.
 
 ```php
@@ -84,6 +83,5 @@ class TemplatedRequestHandler implements \Commando\Web\RequestHandler
 Run the full example:
 
 ```bash
-cd /sample-twig/public/
-php -S localhost:8000
+sh /sample-twig/start.sh
 ```

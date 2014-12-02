@@ -283,7 +283,7 @@ Start the application on a local port (installs composer dependencies and starts
 php webserver on port 8000):
 
 ```sh
-sh ./sample/start.sh
+sh /sample/start.sh
 ```
 
 ```
