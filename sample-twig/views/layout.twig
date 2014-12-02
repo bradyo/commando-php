@@ -6,6 +6,14 @@
     {% endblock %}
 </head>
 <body>
+    <div id="navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/page">Page</a></li>
+            <li><a href="/not-page">Not Found</a></li>
+            <li><a href="/error">Error</a></li>
+        </ul>
+    </div>
     <div id="content">
         {% block content %}{% endblock %}
     </div>

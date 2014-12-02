@@ -17,8 +17,8 @@
         "twig/twig": "1.16.2"
     },
     "autoload": {
-        "psr-0": {
-            "TwigSample": "src/"
+        "psr-4": {
+            "TwigSample\\": "src/"
         }
     }
 }

@@ -16,5 +16,6 @@ class Application extends \Commando\Application
         );
 
         $this->setWebRequestHandler(new RequestHandler($twig));
+        $this->setWebExceptionHandler(new ErrorHandler($twig));
     }
 }

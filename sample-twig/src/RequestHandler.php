@@ -18,6 +18,7 @@ class RequestHandler implements \Commando\Web\RequestHandler
         $this->router = new Router([
             new Route('get-home', Method::GET, '/', new HomeAction()),
             new Route('get-page', Method::GET, '/page', new PageAction()),
+            new Route('get-error', Method::GET, '/error', new ErrorAction()),
         ]);
         $this->notFoundAction = new NotFoundAction();
     }
