@@ -166,7 +166,7 @@ class GuardHandler implements RequestHandler
         AuthenticatedRequestHandler $authenticatedHandler
     ) {
         $this->guard = $guard;
-        $this->securedHandler = $securedHandler;
+        $this->authenticatedHandler = $authenticatedHandler;
     }
 
     /**
