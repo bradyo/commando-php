@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    {% block head %}
-        <title>{% block title %}{% endblock %}</title>
-    {% endblock %}
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/lib/menu//styles.css">
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script src="/lib/menu/script.js"></script>
+
+    <link rel="stylesheet" href="/main.css" />
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <div id="navigation">
+    <div id="cssmenu">
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/page">Page</a></li>
-            <li><a href="/not-page">Not Found</a></li>
-            <li><a href="/error">Error</a></li>
+            <li><a href="/"><span>Home</span></a></li>
+            <li><a href="/page"><span>Page</span></a></li>
+            <li><a href="/not-page"><span>404 Page</span></a></li>
+            <li><a href="/error"><span>500 Page</span></a></li>
         </ul>
     </div>
     <div id="content">
@@ -19,7 +26,8 @@
     </div>
     <div id="footer">
         {% block footer %}
-            &copy; Copyright Commando-PHP </a>.
+            Powered by <a href="https://github.com/bradyo/commando-php">Commando-PHP</a>
+            and <a href="http://twig.sensiolabs.org/">Twig</a>.
         {% endblock %}
     </div>
 </body>
