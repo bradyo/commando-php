@@ -57,11 +57,11 @@ class HomeAction implements Action
 }
 ```
 
-Now our Commando `RequestHandler` needs to delegate `Requests` to `Action` instances
-and convert the returned `View` object into a HTTP `Response` object using Twig.
+Now we need a Commando `RequestHandler` that delegate `Requests` to `Action` instances
+and converts the returned `View` object into a HTTP `Response` object using Twig.
 
 ```php
-class RequestHandler implements \Commando\Web\RequestHandler
+class TemplatedRequestHandler implements \Commando\Web\RequestHandler
 {
     private $twig;
 
@@ -75,6 +75,7 @@ class RequestHandler implements \Commando\Web\RequestHandler
     {
         $view = $this->action->handle($request);
         $content = $this->twig->render($view->getName(), $view->getContext());
+
         return new Response($content, 200);
     }
 }
