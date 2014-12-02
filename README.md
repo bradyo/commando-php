@@ -282,8 +282,8 @@ Browse the sample application in the `sample` folder for more examples.
 Start the application on a local port (installs composer dependencies and starts
 php webserver on port 8000):
 
-```sh
-sh /sample/start.sh
+```bash
+cd sample/ && ./start.sh
 ```
 
 ```
@@ -450,9 +450,8 @@ class TemplatedRequestHandler implements \Commando\Web\RequestHandler
 }
 ```
 
-Run the full example:
+Run the full example under `sample-twig`:
 
 ```bash
-cd sample-twig/
-sh ./start.sh
+cd sample-twig/ && ./start.sh
 ```
