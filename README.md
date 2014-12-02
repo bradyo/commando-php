@@ -156,14 +156,14 @@ interface AuthenticatedRequestHandler
     public function handle(AuthenticatedRequest $request);
 }
 
-class GuardedRequestHandler implements RequestHandler
+class GuardHandler implements RequestHandler
 {
     private $guard;
-    private $securedHandler;
+    private $authenticatedHandler;
 
     public function __construct(
         Guard $guard,
-        AuthenticatedRequestHandler $securedHandler
+        AuthenticatedRequestHandler $authenticatedHandler
     ) {
         $this->guard = $guard;
         $this->securedHandler = $securedHandler;
@@ -177,7 +177,7 @@ class GuardedRequestHandler implements RequestHandler
     {
         if ($request->getUserInfo() !== null) {
             $authenticatedRequest = $this->guard->authenticate($request);
-            return $this->securedHandler->handle($authenticatedRequest);
+            return $this->authenticatedHandler->handle($authenticatedRequest);
         } else {
             return new Response('Authentication required', 401);
         }
@@ -235,17 +235,10 @@ test cases against:
 ```php
 // create a RestHandler for resources
 $db = new PDO('sqlite:db.sqlite');
-$userResourceConfig = new UserResourceConfig(
-    new UserRepository($db)
-);
-$noteResourceConfig = new NoteResourceConfig(
-    new NoteRepository($db)
-);
-$repository = new ResourceRepository([
-    $userResourceConfig,
-    $noteResourceConfig
-]);
-$noteHandler = new RestRequestHandler($repository, $noteResourceConfig);
+$userConfig = new UserResourceConfig(new UserRepository($db));
+$noteConfig = new NoteResourceConfig(new NoteRepository($db));
+$repository = new ResourceRepository([$userConfig, $noteConfig]);
+$noteHandler = new RestRequestHandler($repository, $noteConfig);
 
 // process a request
 $request = new Request($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
@@ -286,11 +279,11 @@ Running the Sample Application
 
 Browse the sample application in the `sample` folder for more examples.
 
-Start the application on a local port:
+Start the application on a local port (installs composer dependencies and starts
+php webserver on port 8000):
 
 ```sh
-cd ./commando-php/sample/public/
-php -S localhost:8000
+sh ./sample/start.sh
 ```
 
 ```
