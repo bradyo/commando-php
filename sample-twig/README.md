@@ -83,6 +83,6 @@ class RequestHandler implements \Commando\Web\RequestHandler
 Run the full example:
 
 ```bash
-cd sample-twig/public/
+cd /sample-twig/public/
 php -S localhost:8000
 ```
