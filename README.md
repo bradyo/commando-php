@@ -455,3 +455,129 @@ Run the full example under `sample-twig`:
 ```bash
 cd sample-twig/ && ./start.sh
 ```
+
+
+Asynchronous Web Component Handling
+===================================
+
+Web components handle their own business logic and rendering, giving you highly decoupled,
+pluggable units for your website.
+
+Handlers are very easy to componentize. You can think of a component as an object that
+renders it's own HTML content when invoked by a coordinating object.
+
+For this example, we are going to create a master RequestHandler that asynchronously
+calls components to render, then assembles component content into a complete page.
+
+```php
+namespace AsyncSample;
+
+use Commando\Web\Request;
+use Commando\Web\RequestHandler;
+use Commando\Web\Response;
+use Amp;
+use Mustache_Engine;
+
+class Application extends \Commando\Application implements RequestHandler
+{
+    /**
+     * @var Component[] async components making up application
+     */
+    private $components;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setWebRequestHandler($this);
+        $this->components = [
+            new Component('component1', 'Component 1'),
+            new Component('component2', 'Component 2'),
+            new Component('component3', 'Component 3'),
+            new Component('component4', 'Component 4'),
+            new Component('component5', 'Component 5'),
+            new Component('component6', 'Component 6'),
+        ];
+    }
+
+    public function handle(Request $request)
+    {
+        $contentMap = [];
+        Amp\run(function() use ($request, &$contentMap) {
+            $promises = [];
+            foreach ($this->components as $component) {
+                $name = $component->getName();
+                $promises[$name] = $component->getContentPromise($request);
+            }
+            $contentMapPromise = Amp\all($promises);
+            $contentMap = Amp\wait($contentMapPromise);
+            Amp\stop();
+        });
+
+        $mustache = new Mustache_Engine();
+        $template = file_get_contents(dirname(__DIR__) . '/views/layout.mustache');
+        $content = $mustache->render($template, $contentMap);
+
+        return new Response($content);
+    }
+}
+```
+
+The first thing we do in `RequestHandler::handle()` is start an event reactor loop using `Amp`
+to manage the asynchronous processes. The `Component` returns a `Promise` for some HTML content
+that can be cashed in on when all the `Components` have finished generating content.
+
+```php
+namespace AsyncSample;
+
+use Amp;
+use Amp\Future;
+use Commando\Web\Request;
+use Mustache_Engine;
+
+class Component
+{
+    private $name;
+    private $title;
+
+    public function __construct($name, $title)
+    {
+        $this->name = $name;
+        $this->title = $title;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getContentPromise(Request $request)
+    {
+        $future = new Future();
+        Amp\immediately(function() use ($future, $request) {
+            $start = microtime(true);
+            sleep(rand(0, 1)); // blocking
+
+            $mustache = new Mustache_Engine();
+            $template = file_get_contents(dirname(__DIR__) . '/views/component.mustache');
+            $content = $mustache->render($template, [
+                'title' => $this->title,
+                'message' => md5(uniqid()),
+                'duration' => round((microtime(true) - $start) * 1000, 2) . ' ms'
+            ]);
+
+            $future->succeed($content);
+        });
+
+        return $future->promise();
+    }
+}
+```
+
+The components in the `Application` are just simple objects, so any dependencies
+can be passed through from the the `Application` that composes them.
+
+Run the full example under `sample-async`:
+
+```bash
+./sample-async/start.sh
+```
