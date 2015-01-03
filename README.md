@@ -9,15 +9,15 @@ and modular structure for HTTP and Shell requests and leaving most other decisio
 up to the developer.
 
 Commando has no View, Model, or DI layers. Those choices are all up to the developer and
-can vary between modules if needed.
+can vary between modules as needed.
 
 Commando:
 - provides RequestHandler and ShellHandler interfaces
-- constructs and application in a compositional way using configs and Module objects,
-  an Application is just a unit to hold config and Modules and execute commands
-- provides web and shell error handlers
+- provides default web and shell error handlers
 
 Principles:
+- construct applications in a compositional way using configs and Module objects,
+  an Application is just a unit for hold config and Modules and execute commands
 - conventional Controller classes replaced by Handler classes, which do only one thing
 - provide simple interfaces to implement
 - favor composition over inheritance
