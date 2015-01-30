@@ -1,10 +1,10 @@
 <?php
-namespace AsyncSample;
+namespace SampleAsync;
 
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
-use Commando\Web\Response;
 use Amp;
+use Commando\Web\TextResponse;
 use Mustache_Engine;
 
 class Application extends \Commando\Application implements RequestHandler
@@ -46,6 +46,6 @@ class Application extends \Commando\Application implements RequestHandler
         $template = file_get_contents(dirname(__DIR__) . '/views/layout.mustache');
         $content = $mustache->render($template, $contentMap);
 
-        return new Response($content);
+        return new TextResponse($content);
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "85742849c481cf0be25a4630ae1c68e3",
+    "hash": "2d603fcdf34eac338f4c971372247da5",
     "packages": [
         {
             "name": "amphp/amp",
@@ -12,10 +12,14 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/amp",
-                "reference": "a99b923819a891efc502810518bb6b610b8e0eab"
+                "reference": "7e451251ab379eb9a7c060b0e39bf819adb785ae"
             },
             "require": {
                 "php": ">=5.4.0"
+            },
+            "suggest": {
+                "pecl/libevent": "Extension for libevent backends (high performance use cases).",
+                "php-uv": "Extension for libuv backends (high performance use cases)."
             },
             "type": "library",
             "extra": {
@@ -57,7 +61,7 @@
                 "non-blocking",
                 "promise"
             ],
-            "time": "2014-12-08 16:56:26"
+            "time": "2015-01-29 03:30:02"
         },
         {
             "name": "aura/router",
@@ -166,6 +170,7 @@
         "amphp/amp": 20
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.5"
     },

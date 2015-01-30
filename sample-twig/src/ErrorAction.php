@@ -1,5 +1,5 @@
 <?php
-namespace TwigSample;
+namespace SampleTwig;
 
 use Commando\Web\Request;
 use Exception;

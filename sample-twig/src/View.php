@@ -1,5 +1,5 @@
 <?php
-namespace TwigSample;
+namespace SampleTwig;
 
 class View
 {

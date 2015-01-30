@@ -1,5 +1,5 @@
 <?php
-namespace TwigSample;
+namespace SampleTwig;
 
 use Commando\Web\Request;
 
@@ -7,8 +7,9 @@ class HomeAction implements Action
 {
     public function handle(Request $request)
     {
+        parse_str($request->getQueryString(), $params);
         return new View('home', [
-            'name' => $request->query->get('name', 'Anonymous Coward')
+            'name' => isset($params['name']) ? $params['name'] : 'Anonymous Coward'
         ]);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace AsyncSample;
+namespace SampleAsync;
 
 use Amp;
 use Amp\Future;
@@ -36,7 +36,6 @@ class Component
                 'message' => md5(uniqid()),
                 'duration' => round((microtime(true) - $start) * 1000, 2) . ' ms'
             ]);
-
             $future->succeed($content);
         });
 

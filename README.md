@@ -277,13 +277,13 @@ class AppRequestHandler implements RequestHandler
 Running the Sample Application
 ==============================
 
-Browse the sample application in the `sample` folder for more examples.
+Browse the sample application in the `sample-api` folder for more examples.
 
 Start the application on a local port (installs composer dependencies and starts
 php webserver on port 8000):
 
 ```bash
-cd sample/ && ./start.sh
+cd sample-api/ && ./start.sh
 ```
 
 ```
@@ -470,7 +470,7 @@ For this example, we are going to create a master RequestHandler that asynchrono
 calls components to render, then assembles component content into a complete page.
 
 ```php
-namespace AsyncSample;
+namespace SampleAsync;
 
 use Commando\Web\Request;
 use Commando\Web\RequestHandler;
@@ -527,7 +527,7 @@ to manage the asynchronous processes. The `Component` returns a `Promise` for so
 that can be cashed in on when all the `Components` have finished generating content.
 
 ```php
-namespace AsyncSample;
+namespace SampleAsync;
 
 use Amp;
 use Amp\Future;

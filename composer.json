@@ -2,7 +2,7 @@
     "minimum-stability": "dev",
     "name": "bradyo/commando-php",
     "version": "1.0.0-alpha",
-    "description": "Experimental PHP framework based on the Symfony2 Components",
+    "description": "Experimental PHP framework",
     "keywords": ["framework"],
     "homepage": "https://github.com/bradyo/commando-php",
     "license": "MIT",
@@ -21,8 +21,8 @@
         "symfony/routing": ">=2.4,<2.6-dev"
     },
     "autoload": {
-        "psr-0": {
-            "Commando": "src/"
+        "psr-4": {
+            "Commando\\": "src/"
         }
     }
 }

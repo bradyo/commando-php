@@ -1,5 +1,5 @@
 <?php
-namespace TwigSample;
+namespace SampleTwig;
 
 use Twig_Loader_Filesystem;
 use Twig_Environment;

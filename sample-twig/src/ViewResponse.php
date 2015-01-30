@@ -1,9 +1,9 @@
 <?php
-namespace TwigSample;
+namespace SampleTwig;
 
-use Commando\Web\Response;
+use Commando\Web\TextResponse;
 
-class ViewResponse extends Response
+class ViewResponse extends TextResponse
 {
     public function __construct(\Twig_Environment $twig, View $view, $httpStatus = 200)
     {
