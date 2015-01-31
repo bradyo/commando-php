@@ -198,7 +198,7 @@ in a top level entry point that implements the Commando `RequestHandler` interfa
 the conversions to application specific `Request` objects, the request is routed to
 contained sub-modules, which may implement more application specific handlers.
 
-![Commando Handler Flow](https://raw.github.com/bradyo/commando-php/master/commando-flow.png)
+![Commando Handler Flow](https://raw.github.com/bradyo/commando-php/develop/commando-flow.png)
 
 
 Compositional Rest Modules
