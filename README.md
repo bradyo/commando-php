@@ -188,6 +188,22 @@ class GuardHandler implements RequestHandler
 Compositional Rest Modules
 --------------------------
 
+Immutable `Requests` pass through a series of handlers to get converted to a `Response`.
+`Handlers` can do the work required to convert the given `Request` into a `Response` or
+delegate to other handlers via it's own internal routing to other `Handlers`. In many applications
+you will have global actions that occur on requests before passing them down to more
+specific modules, for example converting request body string into objects based on `Content-Type`
+header, or processing `Authorization` headers to get an accessing user. These actions are performed
+in a top level entry point that implements the Commando `RequestHandler` interface. After doing
+the conversions to application specific `Request` objects, the request is routed to
+contained sub-modules, which may implement more application specific handlers.
+
+![Commando Handler Flow](https://raw.github.com/bradyo/commando-php/master/commando-flow.png)
+
+
+Compositional Rest Modules
+--------------------------
+
 You have to create separate `RequestHandler` classes for every action and that results
 in a lot more classes than a conventional MVC architecture that groups actions into
 a single class. To take advantage of the separation, you need to create compositions of
