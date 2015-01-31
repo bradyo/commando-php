@@ -75,6 +75,22 @@ $app->handleRequest();
 ```
 
 
+Structure of a Commando Application
+-----------------------------------
+
+Immutable `Requests` pass through a series of handlers to get converted to a `Response`.
+`Handlers` can do the work required to convert the given `Request` into a `Response` or
+delegate to other handlers via it's own internal routing to other `Handlers`. In many applications
+you will have global actions that occur on requests before passing them down to more
+specific modules, for example converting request body string into objects based on `Content-Type`
+header, or processing `Authorization` headers to get an accessing user. These actions are performed
+in a top level entry point that implements the Commando `RequestHandler` interface. After doing
+the conversions to application specific `Request` objects, the request is routed to
+contained sub-modules, which may implement more application specific handlers.
+
+![Commando Handler Flow](https://raw.github.com/bradyo/commando-php/develop/commando-flow.png)
+
+
 Request Handler Example
 -----------------------
 
@@ -184,21 +200,6 @@ class GuardHandler implements RequestHandler
     }
 }
 ```
-
-Compositional Rest Modules
---------------------------
-
-Immutable `Requests` pass through a series of handlers to get converted to a `Response`.
-`Handlers` can do the work required to convert the given `Request` into a `Response` or
-delegate to other handlers via it's own internal routing to other `Handlers`. In many applications
-you will have global actions that occur on requests before passing them down to more
-specific modules, for example converting request body string into objects based on `Content-Type`
-header, or processing `Authorization` headers to get an accessing user. These actions are performed
-in a top level entry point that implements the Commando `RequestHandler` interface. After doing
-the conversions to application specific `Request` objects, the request is routed to
-contained sub-modules, which may implement more application specific handlers.
-
-![Commando Handler Flow](https://raw.github.com/bradyo/commando-php/develop/commando-flow.png)
 
 
 Compositional Rest Modules
