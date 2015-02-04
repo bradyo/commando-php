@@ -108,7 +108,7 @@ abstract class Application
     private function sendHttpResponse(Response $response)
     {
         $symfonyResponse = new SymfonyResponse(
-            $response->getBody() . "\n",
+            $response->getBody(),
             $response->getStatusCode(),
             $response->getHeaders()
         );
